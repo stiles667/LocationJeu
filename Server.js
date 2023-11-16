@@ -21,7 +21,7 @@ app.get("/api/jeux", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM jeux");
+    const rows = await conn.query("SELECT * FROM Jeux");
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
