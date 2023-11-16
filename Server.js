@@ -94,6 +94,14 @@ app.post("/Inscription", async (req, res) => {
   try {
     conn = await pool.getConnection();
 
+    // Check if email already exists
+    const users = await conn.query("SELECT * FROM Users WHERE Email = ?", [Email]);
+
+    if (users.length > 0) {
+      // If a user is found, send an error response
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
     // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(MotDePasse, salt);
