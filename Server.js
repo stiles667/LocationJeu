@@ -30,6 +30,19 @@ app.get("/jeux", async (req, res) => {
     if (conn) conn.release();
   }
 });
+app.get("/users", async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT * FROM Users"); // replace "Users" with your actual users table name
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
 
 
 //  pour récupérer les données de la table "Utilisateurs"
@@ -92,9 +105,12 @@ app.post("/Inscription", async (req, res) => {
   try {
     conn = await pool.getConnection();
     
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(MotDePasse, saltRounds);
+    
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
-    const result = await conn.query(query, [Nom, Prenom, Email, MotDePasse]);
+    const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
     
     res.status(201).json({ id: result.insertId, Nom, Prenom, Email });
   } catch (err) {
