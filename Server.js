@@ -16,8 +16,8 @@ const pool = mariadb.createPool({
   database: process.env.DB_DTB,
 });
 
-// pour récupérer les données de la table "Articles"
-app.get("/jeux", async (req, res) => {
+
+app.get("/api/jeux", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
