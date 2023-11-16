@@ -1,0 +1,74 @@
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Centrer la barre de recherche au-dessus des Pokémon */
+  .nav-bar {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  /* Définir une largeur maximale pour la barre de navigation */
+  .nav-bar input[type="text"] {
+    width: 100%;
+    max-width: 400px; /* Par exemple, ajustez la largeur maximale selon vos préférences */
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .Panier {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* Style des cartes de Pokemon dans le Panier */
+  .Panier-card {
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .Panier-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .Panier-card img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  button {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #cc0000;
+  }
+  
+  .remove-all-button {
+    margin: 20px auto;
+    width: 300px;
+    height: 50px;
+    display: block;
+    font-size: 18px;
+  }
+  
