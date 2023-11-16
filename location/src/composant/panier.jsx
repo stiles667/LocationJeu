@@ -2,31 +2,47 @@ import React, { useState, useEffect } from 'react';
 import './panier.css';
 
 export default function Panier() {
-  const [Panier, setPanier] = useState([]);
+  const [panier, setPanier] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const storedPanier = localStorage.getItem('Panier');
-    if (storedPanier) {
-      setPanier(JSON.parse(storedPanier));
-    }
+    // Récupère les jeux du panier depuis la base de données
+    fetch('http://localhost:3002/api/panier')
+      .then((response) => response.json())
+      .then((data) => {
+        setPanier(data);
+      })
+      .catch((error) => console.error(error));
   }, []);
 
-  const removeFromPanier = (index) => {
-    const updatedPanier = [...Panier];
-    updatedPanier.splice(index, 1);
-    setPanier(updatedPanier);
-    localStorage.setItem('Panier', JSON.stringify(updatedPanier));
+  const removeFromPanier = (jeuId) => {
+    // Envoie une requête DELETE pour retirer le jeu du panier dans la base de données
+    fetch(`http://localhost:3002/api/panier/${jeuId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Met à jour l'état local du panier après la suppression
+        setPanier((prevPanier) => prevPanier.filter((jeu) => jeu.JeuxID !== jeuId));
+      })
+      .catch((error) => console.error(error));
   };
 
   const removeAllFromPanier = () => {
-    setPanier([]);
-    localStorage.removeItem('Panier'); 
+    // Envoie une requête DELETE pour vider entièrement le panier dans la base de données
+    fetch('http://localhost:3002/api/panier', {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then(() => {
+        // Met à jour l'état local du panier après la suppression
+        setPanier([]);
+      })
+      .catch((error) => console.error(error));
   };
 
-  
-  const filteredPanier = Panier.filter((Jeux) =>
-    Jeux.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPanier = panier.filter((jeu) =>
+    jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -35,24 +51,23 @@ export default function Panier() {
       <div className="nav-bar">
         <input
           type="text"
-          placeholder="Chercher un Jeux..."
+          placeholder="Chercher un Jeu..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          
         />
-        
       </div>
-      <button onClick={removeAllFromPanier} className="remove-all-button">Remove All</button>
-      
+      <button onClick={removeAllFromPanier} className="remove-all-button">
+        Remove All
+      </button>
       <div className="Panier">
-        {filteredPanier.map((Jeux, index) => (
-          <div key={index} className="Panier-card">
-            <p>{Jeux.name}</p>
+        {filteredPanier.map((jeu) => (
+          <div key={jeu.JeuxID} className="Panier-card">
+            <p>{jeu.Titre}</p>
             <img
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/Jeux/${Jeux.id}.png`}
-              alt={Jeux.name}
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/Jeux/${jeu.JeuxID}.png`}
+              alt={jeu.Titre}
             />
-            <button onClick={() => removeFromPanier(index)}>Remove</button>
+            <button onClick={() => removeFromPanier(jeu.JeuxID)}>Remove</button>
           </div>
         ))}
       </div>

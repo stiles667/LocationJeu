@@ -150,6 +150,53 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/louer", async (req, res) => {
+  let conn;
+  const { JeuxID } = req.body;
+
+  try {
+    conn = await pool.getConnection();
+
+    // Récupère les détails du jeu depuis la table "jeux"
+    const selectQuery = "SELECT * FROM jeux WHERE JeuxID = ?";
+    const jeuDetails = await conn.query(selectQuery, [JeuxID]);
+
+    if (jeuDetails.length > 0) {
+      const jeu = jeuDetails[0];
+
+      // Ajoute le jeu à la table "louer" avec ses détails
+      const insertQuery = "INSERT INTO louer (JeuxID, Titre, Description, NoteMoyenne, Prix) VALUES (?, ?, ?, ?, ?)";
+      const insertResult = await conn.query(insertQuery, [jeu.JeuxID, jeu.Titre, jeu.Description, jeu.NoteMoyenne, jeu.Prix]);
+
+      res.status(201).json({ message: 'Jeu ajouté à la table louer' });
+    } else {
+      // Le jeu n'existe pas dans la table "jeux"
+      res.status(404).json({ error: 'JeuxID not found' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+app.get("/api/panier", async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT * FROM louer");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+
+
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
