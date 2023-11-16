@@ -30,19 +30,7 @@ app.get("/jeux", async (req, res) => {
     if (conn) conn.release();
   }
 });
-app.get("/users", async (req, res) => {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM Users"); // replace "Users" with your actual users table name
-    res.status(200).json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
+
 
 
 //  pour récupérer les données de la table "Utilisateurs"
@@ -83,8 +71,9 @@ app.post("/Users", async (req, res) => {
     conn = await pool.getConnection();
 
     // Hasher le mot de passe avec bcrypt
-    const hashedPassword = await bcrypt.hash(MotDePasse, 10); // 10 est le nombre de "salage" 
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hashedPassword;
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
@@ -104,10 +93,11 @@ app.post("/Inscription", async (req, res) => {
 
   try {
     conn = await pool.getConnection();
-    
+
     // Hash the password
-    const hashedPassword = await bcrypt.hash(MotDePasse, saltRounds);
-    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(MotDePasse, salt);
+
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
@@ -153,3 +143,4 @@ app.post("/login", async (req, res) => {
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
+
