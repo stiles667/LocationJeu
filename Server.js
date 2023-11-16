@@ -62,7 +62,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-app.post("/api/Users", async (req, res) => {
+app.post("/Users", async (req, res) => {
   let conn;
   const { Nom, Prenom, Email, MotDePasse } = req.body;
 
@@ -85,7 +85,7 @@ app.post("/api/Users", async (req, res) => {
   }
 });
 
-app.post("/api/Inscription", async (req, res) => {
+app.post("/Inscription", async (req, res) => {
   let conn;
   const { Nom, Prenom, Email, MotDePasse } = req.body;
 
@@ -105,7 +105,7 @@ app.post("/api/Inscription", async (req, res) => {
   }
 });
 
-app.post("/api/login", async (req, res) => {
+app.post("/login", async (req, res) => {
   const { Email, MotDePasse } = req.body;
   let conn;
 
