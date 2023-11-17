@@ -30,19 +30,7 @@ app.get("/api/jeux", async (req, res) => {
     if (conn) conn.release();
   }
 });
-app.get("/users", async (req, res) => {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM Users"); // replace "Users" with your actual users table name
-    res.status(200).json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
+
 
 
 //  pour récupérer les données de la table "Utilisateurs"
@@ -83,8 +71,9 @@ app.post("/Users", async (req, res) => {
     conn = await pool.getConnection();
 
     // Hasher le mot de passe avec bcrypt
-    const hashedPassword = await bcrypt.hash(MotDePasse, 10); // 10 est le nombre de "salage" 
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hashedPassword;
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
@@ -104,10 +93,19 @@ app.post("/Inscription", async (req, res) => {
 
   try {
     conn = await pool.getConnection();
-    
+
+    // Check if email already exists
+    const users = await conn.query("SELECT * FROM Users WHERE Email = ?", [Email]);
+
+    if (users.length > 0) {
+      // If a user is found, send an error response
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
     // Hash the password
-    const hashedPassword = await bcrypt.hash(MotDePasse, saltRounds);
-    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(MotDePasse, salt);
+
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
@@ -150,27 +148,26 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/louer", async (req, res) => {
-  let conn;
-  const { JeuxID } = req.body;
+app.post("/locations", async (req, res) => {
+  const { JeuxID, DateDebut, UtilisateurID } = req.body;
 
+  let conn;
   try {
     conn = await pool.getConnection();
 
-    // Récupère les détails du jeu depuis la table "jeux"
-    const selectQuery = "SELECT * FROM jeux WHERE JeuxID = ?";
-    const jeuDetails = await conn.query(selectQuery, [JeuxID]);
+    // Vérifie si le jeu existe dans la table "Jeux"
+    const checkJeuQuery = "SELECT * FROM Jeux WHERE JeuxID = ?";
+    const checkJeuResult = await conn.query(checkJeuQuery, [JeuxID]);
 
-    if (jeuDetails.length > 0) {
-      const jeu = jeuDetails[0];
+    if (checkJeuResult.length > 0) {
+      // Le jeu existe, ajoute la location à la table "Locations"
+      const addLocationQuery =
+        "INSERT INTO Locations (JeuxID, DateDebut, UtilisateurID) VALUES (?, ?, ?)";
+      const addLocationResult = await conn.query(addLocationQuery, [JeuxID, DateDebut, UtilisateurID]);
 
-      // Ajoute le jeu à la table "louer" avec ses détails
-      const insertQuery = "INSERT INTO louer (JeuxID, Titre, Description, NoteMoyenne, Prix) VALUES (?, ?, ?, ?, ?)";
-      const insertResult = await conn.query(insertQuery, [jeu.JeuxID, jeu.Titre, jeu.Description, jeu.NoteMoyenne, jeu.Prix]);
-
-      res.status(201).json({ message: 'Jeu ajouté à la table louer' });
+      res.status(201).json({ message: 'Location ajoutée au panier' });
     } else {
-      // Le jeu n'existe pas dans la table "jeux"
+      // Le jeu n'existe pas dans la table "Jeux"
       res.status(404).json({ error: 'JeuxID not found' });
     }
   } catch (err) {
@@ -181,11 +178,12 @@ app.post("/louer", async (req, res) => {
   }
 });
 
+
 app.get("/api/panier", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM louer");
+    const rows = await conn.query("SELECT * FROM locations");
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
@@ -195,8 +193,37 @@ app.get("/api/panier", async (req, res) => {
   }
 });
 
+app.delete("/api/panier/:jeuId", async (req, res) => {
+  const { jeuId } = req.params;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Vérifie d'abord si le jeu existe dans la table "locations"
+    const checkQuery = "SELECT * FROM locations WHERE JeuxID = ?";
+    const checkResult = await conn.query(checkQuery, [jeuId]);
+
+    if (checkResult.length > 0) {
+      // Le jeu existe dans le panier, procède à la suppression
+      const deleteQuery = "DELETE FROM locations WHERE JeuxID = ?";
+      await conn.query(deleteQuery, [jeuId]);
+
+      res.status(200).json({ message: 'Jeu retiré du panier' });
+    } else {
+      // Le jeu n'existe pas dans le panier
+      res.status(404).json({ error: 'JeuxID not found in the panier' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
 
 
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
+

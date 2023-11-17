@@ -16,13 +16,13 @@ export default function Panier() {
   }, []);
 
   const removeFromPanier = (jeuId) => {
-    // Envoie une requête DELETE pour retirer le jeu du panier dans la base de données
+    console.log('Removing jeu with ID:', jeuId);
     fetch(`http://localhost:3002/api/panier/${jeuId}`, {
       method: 'DELETE',
     })
       .then((response) => response.json())
       .then((data) => {
-        // Met à jour l'état local du panier après la suppression
+        console.log('Response after removal:', data);
         setPanier((prevPanier) => prevPanier.filter((jeu) => jeu.JeuxID !== jeuId));
       })
       .catch((error) => console.error(error));
@@ -63,10 +63,6 @@ export default function Panier() {
         {filteredPanier.map((jeu) => (
           <div key={jeu.JeuxID} className="Panier-card">
             <p>{jeu.Titre}</p>
-            <img
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/Jeux/${jeu.JeuxID}.png`}
-              alt={jeu.Titre}
-            />
             <button onClick={() => removeFromPanier(jeu.JeuxID)}>Remove</button>
           </div>
         ))}
