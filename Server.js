@@ -51,8 +51,9 @@ app.post("/login", async (req, res) => {
       const match = await bcrypt.compare(MotDePasse, user.MotDePasse);
 
       if (match) {
+        console.log(user);
         // If the passwords match, send a success response
-        res.status(200).json({ message: 'Successfully logged in' });
+        res.status(200).json({ message: 'Successfully logged in', id: user.UtilisateurID });
       } else {
         // If the passwords do not match, send an error response
         res.status(400).json({ error: 'Invalid password' });
@@ -167,16 +168,15 @@ app.post("/login", async (req, res) => {
   try {
     conn = await pool.getConnection();
     
-    const query = "SELECT * FROM Users WHERE Email = ?";
+    const query = "SELECT * FROM users WHERE Email = ?";
     
     const result = await conn.query(query, [Email]);
 
     if (result.length > 0) {
       const user = result[0];
-      const match = await bcrypt.compare(MotDePasse, user.MotDePasse);
+      if (user.MotDePasse === MotDePasse) {
+        res.status(200).json({id : user.id}) ;
 
-      if (match) {
-        res.status(200).json({ message: 'Login successful', utilisateurID: user.UtilisateurID });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
@@ -190,123 +190,26 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release();
   }
 });
+app.post('/location',async (req, res) => {
+  const { jeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
+  conn = await pool.getConnection();
 
+  const INSERT_LOCATION_QUERY = 'INSERT INTO locations (jeuxID, dateDebut, dateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
 
-app.get("/louer", async (req, res) => {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM louer");
-    res.status(200).json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
-
-
-
-// app.post("/locations", async (req, res) => {
-//   const { JeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
-
-//   let conn;
-//   try {
-//     conn = await pool.getConnection();
-
-//     // Verify if the game exists in the "Jeux" table
-//     const checkJeuQuery = "SELECT * FROM Jeux WHERE JeuxID = ?";
-//     const checkJeuResult = await conn.query(checkJeuQuery, [JeuxID]);
-
-//     if (checkJeuResult.length > 0) {
-//       // The game exists, add the location to the "Locations" table
-//       const addLocationQuery =
-//         "INSERT INTO Locations (JeuxID, DateDebut, DateFin, UtilisateurID) VALUES (?, ?, ?, ?)";
-//       const addLocationResult = await conn.query(addLocationQuery, [JeuxID, DateDebut, DateFin, UtilisateurID]);
-
-//       res.status(201).json({ message: 'Location ajoutée au panier' });
-//     } else {
-//       // The game does not exist in the "Jeux" table
-//       res.status(404).json({ error: 'JeuxID not found' });
-//     }
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   } finally {
-//     if (conn) conn.release();
-//   }
-// });
-
-
-app.post("/api/louer", async (req, res) => {
-  const { JeuxID, Titre, Description, NoteMoyenne, Prix } = req.body;
-
-  let conn;
-  try {
-    conn = await pool.getConnection();
-
-    // Ajoutez le jeu à la table "louer"
-    const addLouerQuery =
-      "INSERT INTO louer (JeuxID, Titre, Description, NoteMoyenne, Prix) VALUES (?, ?, ?, ?, ?)";
-    const addLouerResult = await conn.query(addLouerQuery, [JeuxID, Titre, Description, NoteMoyenne, Prix]);
-
-    res.status(201).json({ message: 'Jeu ajouté à la table louer' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
-
-
-app.delete("/api/panier/:jeuId", async (req, res) => {
-  const { jeuId } = req.params;
-
-  let conn;
-  try {
-    conn = await pool.getConnection();
-
-    // Vérifie d'abord si le jeu existe dans la table "locations"
-    const checkQuery = "SELECT * FROM locations WHERE JeuxID = ?";
-    const checkResult = await conn.query(checkQuery, [jeuId]);
-
-    if (checkResult.length > 0) {
-      // Le jeu existe dans le panier, procède à la suppression
-      const deleteQuery = "DELETE FROM locations WHERE JeuxID = ?";
-      await conn.query(deleteQuery, [jeuId]);
-
-      res.status(200).json({ message: 'Jeu retiré du panier' });
+  conn.query(INSERT_LOCATION_QUERY, [jeuxID, DateDebut, DateFin, UtilisateurID], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de l\'insertion des données de location : ', err);
+      res.status(500).send('Erreur lors de la location du jeu.');
     } else {
-      // Le jeu n'existe pas dans le panier
-      res.status(404).json({ error: 'JeuxID not found in the panier' });
+      console.log('Données de location insérées avec succès !');
+      res.status(200).send('Jeu loué avec succès !');
     }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
+  });
 });
 
 
-//     if (existingLocation.length > 0) {
-//       return res.status(400).json({ error: 'Jeu non disponible pour ces dates' });
-//     }
 
-//     // Insérer la nouvelle location
-//     const query = "INSERT INTO Locations (jeuxid, UtilisateurID, DateDebut, DateFin) VALUES (?, ?, ?, ?)";
-//     const result = await conn.query(query, [jeuxid, UtilisateurID, dateDebut, dateFin]);
 
-//     res.status(201).json({ id: result.insertId, jeuxid, UtilisateurID, dateDebut, dateFin });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   } finally {
-//     if (conn) conn.release();
-//   }
-// });
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });

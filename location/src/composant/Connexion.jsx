@@ -3,12 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Connexion.css';
 
 
-
 function Connexion() {
   const [formData, setFormData] = useState({
     Email: '',
     MotDePasse: '',
   });
+  localStorage.getItem('UtilisateurID');
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState('');
@@ -27,14 +27,17 @@ function Connexion() {
       });
   
       if (response.ok) {
-        const data = await response.json();
-  
-        console.log(data.message); // Affiche "Login successful"
-        console.log(data.utilisateurID); // Ajoute cette ligne pour déboguer
-  
+        
+      
+        console.log('Login successful');
+        response.json().then((data) => {
+          console.log(data);
+
+        
+        localStorage.setItem('UtilisateurID', data.id);});
         setLoggedIn(true);
-        localStorage.setItem('UtilisateurID', data.utilisateurID);
-  
+        
+
         navigate('/Accueil');
       } else {
         const errorData = await response.json();
