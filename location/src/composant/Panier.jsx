@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-
 export default function Panier() {
     const [searchTerm, setSearchTerm] = React.useState('');
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
     };
-
     return (
         <div className='Body'>
             <div className="header">
