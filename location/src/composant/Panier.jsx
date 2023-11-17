@@ -59,9 +59,10 @@ export default function Panier() {
             <div className="locations-list">
                 <h2>Locations</h2>
                 <ul>
-                {locations.map((location, index) => (
+                {locations.map((location,jeux ,index) => (
         <li key={index}>
-        <p>Nom du jeu: {location.JeuxID}</p>
+        <p>Id du jeu: {location.JeuxID}</p>
+        <p>Nom du jeu: {jeux.itre}</p>
         <p>Date de début: {new Date(location.DateDebut).toLocaleDateString()}</p>
         <p>Date de fin: {new Date(location.DateFin).toLocaleDateString()}</p>
         <p>Utilisateur ID: {location.UtilisateurID}</p>

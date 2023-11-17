@@ -83,6 +83,7 @@ const louerJeu = async () => {
           DateDebut: startDate,
           DateFin: returnDate,
           UtilisateurID: userId, // Utilisez l'ID de l'utilisateur récupéré
+          // titre : selectedGame.titre,
           
         };
         console.log(locationData);

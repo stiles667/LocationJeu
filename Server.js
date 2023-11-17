@@ -157,11 +157,10 @@ app.post("/login", async (req, res) => {
   }
 });
 app.post('/location',async (req, res) => {
-  const { jeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
+  const { jeuxID, DateDebut, DateFin, UtilisateurID ,  } = req.body;
   conn = await pool.getConnection();
 
   const INSERT_LOCATION_QUERY = 'INSERT INTO location (jeuxID, dateDebut, dateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
-
   conn.query(INSERT_LOCATION_QUERY, [jeuxID, DateDebut, DateFin, UtilisateurID], (err, results) => {
     if (err) {
       console.error('Erreur lors de l\'insertion des données de location : ', err);
@@ -177,7 +176,7 @@ app.get('/locations', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query('SELECT * FROM Locations');
+    const rows = await conn.query('SELECT location.*, jeux.Titre FROM location JOIN jeux ON location.JeuxID = jeux.JeuxID');
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
@@ -186,7 +185,6 @@ app.get('/locations', async (req, res) => {
     if (conn) conn.release();
   }
 });
-
 
 
 
