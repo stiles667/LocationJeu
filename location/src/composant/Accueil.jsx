@@ -9,7 +9,7 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-  const userID = localStorage.getItem('UtilisateurID');
+  
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
@@ -69,42 +69,56 @@ const Accueil = () => {
   const handleReturnDateChange = (event) => {
     setReturnDate(event.target.value);
   };
+  // ... (autre code existant)
 
-  const handleLouerClick = async () => {
-    
-      try {
-        const jeuxid = selectedGame.JeuxID;
-       
-        const UtilisateurID = userID; 
+const louerJeu = async () => {
+  try {
+    // Vérifiez si les dates sont valides avant de les envoyer
+    if (startDate && returnDate && selectedGame) {
+      const userId = localStorage.getItem('UtilisateurID'); // Récupère l'ID de l'utilisateur depuis le localStorage
+      console.log(localStorage);
+      if (userId) {
+        const locationData = {
+          jeuxID: selectedGame.JeuxID,
+          DateDebut: startDate,
+          DateFin: returnDate,
+          UtilisateurID: userId, // Utilisez l'ID de l'utilisateur récupéré
+          
+        };
+        console.log(locationData);
+
+        const response = await fetch('http://localhost:3002/location', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(locationData),
+        });
+
+        if (response.ok) {
+          
+          
+          console.log('Jeu loué avec succès !');
+        } else {
+        
+          console.error('Erreur lors de la location du jeu.');
+        }
+      } else {
+        console.error('L\'ID de l\'utilisateur n\'est pas disponible dans le localStorage.');
+      }
+    } else {
+      console.error('Veuillez sélectionner un jeu et des dates valides.');
+    }
+  } catch (error) {
+    console.error('Une erreur est survenue : ', error);
+  }
+};
+
+
+
   
 
-      const response = await fetch('http://localhost:3002/locations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jeuxid,
-          UtilisateurID,
-          dateDebut: startDate,
-          dateFin: returnDate,
-        }),
-      });
-
-      if (response.ok) {
-        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuxid}`);
-        setSelectedGame(null);
-        setStartDate(null);
-        setReturnDate(null);
-      } else {
-        console.error('Erreur lors du paiement :', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erreur lors du paiement :', error);
-    }
-  };
-
-
+  
   return (
     <div className='Body'>
       <div className="header">
@@ -163,7 +177,7 @@ const Accueil = () => {
               onChange={handleReturnDateChange}
             />
             <button onClick={closeOverlay}><img src="https://cdn.icon-icons.com/icons2/894/PNG/512/Close_Icon_icon-icons.com_69144.png" alt="Fermer" /></button>
-            <button onClick={handleLouerClick }><img src="https://cdn-icons-png.flaticon.com/512/57/57493.png" alt="louer" /></button>
+            <button onClick={louerJeu}><img src="https://cdn-icons-png.flaticon.com/512/57/57493.png" alt="louer" /></button>
             
           </div>
         </div>

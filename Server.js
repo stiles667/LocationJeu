@@ -51,8 +51,9 @@ app.post("/login", async (req, res) => {
       const match = await bcrypt.compare(MotDePasse, user.MotDePasse);
 
       if (match) {
+        console.log(user);
         // If the passwords match, send a success response
-        res.status(200).json({ message: 'Successfully logged in' });
+        res.status(200).json({ message: 'Successfully logged in', id: user.UtilisateurID });
       } else {
         // If the passwords do not match, send an error response
         res.status(400).json({ error: 'Invalid password' });
@@ -133,14 +134,15 @@ app.post("/login", async (req, res) => {
   try {
     conn = await pool.getConnection();
     
-    const query = "SELECT * FROM Users WHERE Email = ?";
+    const query = "SELECT * FROM users WHERE Email = ?";
     
     const result = await conn.query(query, [Email]);
 
     if (result.length > 0) {
       const user = result[0];
       if (user.MotDePasse === MotDePasse) {
-        res.status(200).json({ message: 'Login successful' });
+        res.status(200).json({id : user.id}) ;
+
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
@@ -154,36 +156,26 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release();
   }
 });
+app.post('/location',async (req, res) => {
+  const { jeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
+  conn = await pool.getConnection();
 
-// app.post("/locations", async (req, res) => {
-//   let conn;
-//   const { jeuxid, UtilisateurID, dateDebut, dateFin } = req.body;
+  const INSERT_LOCATION_QUERY = 'INSERT INTO locations (jeuxID, dateDebut, dateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
 
-//   try {
-//     conn = await pool.getConnection();
-    
-//     // Vérifier si le jeu est disponible ou s'il est déjà loué pour ces dates
-//     const existingLocation = await conn.query(
-//       "SELECT * FROM Locations WHERE jeuxid = ? AND ((DateDebut BETWEEN ? AND ?) OR (DateFin BETWEEN ? AND ?))",
-//       [jeuxid, dateDebut, dateFin, dateDebut, dateFin]
-//     );
+  conn.query(INSERT_LOCATION_QUERY, [jeuxID, DateDebut, DateFin, UtilisateurID], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de l\'insertion des données de location : ', err);
+      res.status(500).send('Erreur lors de la location du jeu.');
+    } else {
+      console.log('Données de location insérées avec succès !');
+      res.status(200).send('Jeu loué avec succès !');
+    }
+  });
+});
 
-//     if (existingLocation.length > 0) {
-//       return res.status(400).json({ error: 'Jeu non disponible pour ces dates' });
-//     }
 
-//     // Insérer la nouvelle location
-//     const query = "INSERT INTO Locations (jeuxid, UtilisateurID, DateDebut, DateFin) VALUES (?, ?, ?, ?)";
-//     const result = await conn.query(query, [jeuxid, UtilisateurID, dateDebut, dateFin]);
 
-//     res.status(201).json({ id: result.insertId, jeuxid, UtilisateurID, dateDebut, dateFin });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   } finally {
-//     if (conn) conn.release();
-//   }
-// });
+
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
