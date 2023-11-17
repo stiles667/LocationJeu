@@ -16,7 +16,7 @@ function Connexion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch('http://localhost:3002/login', {
         method: 'POST',
@@ -25,7 +25,7 @@ function Connexion() {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         
       
@@ -40,16 +40,12 @@ function Connexion() {
 
         navigate('/Accueil');
       } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Identifiants incorrects');
+        setError('Identifiants incorrects');
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
-  
-  
 
   
   const handleInput = (e) => {
@@ -63,6 +59,7 @@ function Connexion() {
   return (
     <div>
 
+{/* <video src={video} autoPlay loop muted  /> */}
 
       {loggedIn ? (
         <Link to="/Accueil" />

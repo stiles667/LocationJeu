@@ -95,38 +95,6 @@ app.post("/Users", async (req, res) => {
   }
 });
 
-// app.post("/Inscription", async (req, res) => {
-//   let conn;
-//   const { Nom, Prenom, Email, MotDePasse } = req.body;
-
-//   try {
-//     conn = await pool.getConnection();
-
-//     // Check if email already exists
-//     const users = await conn.query("SELECT * FROM Users WHERE Email = ?", [Email]);
-
-//     if (users.length > 0) {
-//       // If a user is found, send an error response
-//       return res.status(400).json({ error: 'Email already exists' });
-//     }
-
-//     // Hash the password
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(MotDePasse, salt);
-
-//     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
-    
-//     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
-    
-//     res.status(201).json({ id: result.insertId, Nom, Prenom, Email });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   } finally {
-//     if (conn) conn.release();
-//   }
-// });
-
 app.post("/Inscription", async (req, res) => {
   let conn;
   const { Nom, Prenom, Email, MotDePasse } = req.body;
@@ -158,8 +126,6 @@ app.post("/Inscription", async (req, res) => {
     if (conn) conn.release();
   }
 });
-
-
 
 app.post("/login", async (req, res) => {
   const { Email, MotDePasse } = req.body;
@@ -213,3 +179,4 @@ app.post('/location',async (req, res) => {
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
+
