@@ -60,7 +60,7 @@ export default function Panier() {
                 <h2>Locations</h2>
                 <ul>
                 {locations.map((location, index) => (
-    <li key={index}>
+        <li key={index}>
         <p>Nom du jeu: {location.JeuxID}</p>
         <p>Date de début: {new Date(location.DateDebut).toLocaleDateString()}</p>
         <p>Date de fin: {new Date(location.DateFin).toLocaleDateString()}</p>
