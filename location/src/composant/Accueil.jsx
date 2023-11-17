@@ -9,10 +9,7 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-  const UtilisateurID = localStorage.getItem('UtilisateurID');
-  console.log("UtilisateurID dans Accueil :", UtilisateurID);
-  
-  
+  const userID = localStorage.getItem('UtilisateurID');
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
@@ -74,11 +71,12 @@ const Accueil = () => {
   };
 
   const handleLouerClick = async () => {
-    try {
-      const jeuxid
-      
-      = selectedGame.JeuxID; // Utilisation de selectedGame.JeuxID
-      const UtilisateurID = 123; // Remplacez ceci par l'ID de l'utilisateur actuel
+    
+      try {
+        const jeuxid = selectedGame.JeuxID;
+       
+        const UtilisateurID = userID; 
+  
 
       const response = await fetch('http://localhost:3002/locations', {
         method: 'POST',
