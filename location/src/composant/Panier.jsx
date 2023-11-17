@@ -2,19 +2,28 @@ import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import './panier.css'; 
 export default function Panier() {
-    // const [searchTerm, setSearchTerm] = React.useState('');
-    
     const [panier, setPanier] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
-        // Récupère les jeux de la table "Louer" depuis la base de données
-        fetch('http://localhost:3002/louer')
-        .then((response) => response.json())
-        .then((data) => {
-            setPanier(data);
-        })
-        .catch((error) => console.error(error));
-    }, []);
+        const userId = localStorage.getItem('UtilisateurID');
+    
+        if (userId && !isNaN(userId)) {
+          fetch(`http://localhost:3002/locations/${userId}/jeux`)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('Data from server:', data);
+              setPanier(data);
+            })
+            .catch((error) => console.error(error));
+        } else {
+          console.error("L'ID de l'utilisateur n'est pas disponible ou n'est pas valide.");
+        }
+      }, []);
+    
+      
+    
+      
+      
 
     const removeFromPanier = (jeuId) => {
         console.log('Removing jeu with ID:', jeuId);
