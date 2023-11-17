@@ -11,7 +11,7 @@ function Connexion() {
   });
 
   const [loggedIn, setLoggedIn] = useState(false);
-  const [error, setError] = useState(''); // State pour gérer les erreurs
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,12 +27,16 @@ function Connexion() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         console.log('Login successful');
         setLoggedIn(true);
-        // localStorage.setItem('utilisateurId', utilisateurId);
-        navigate('/Accueil'); // Redirige vers la page Accueil
+
+        // Stocke l'ID de l'utilisateur dans le localStorage
+        localStorage.setItem('UtilisateurID', data.UtilisateurID);
+
+        navigate('/Accueil');
       } else {
-        setError('Identifiants incorrects'); // Définit le message d'erreur
+        setError('Identifiants incorrects');
       }
     } catch (error) {
       console.error('Error:', error);

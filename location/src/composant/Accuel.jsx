@@ -6,18 +6,19 @@ const Accueil = () => {
   const [jeux, setJeux] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [selectedGame, setSelectedGame] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [returnDate, setReturnDate] = useState(null);
+  const UtilisateurID = localStorage.getItem('UtilisateurID');
+  console.log("UtilisateurID dans Accueil :", UtilisateurID);
+  
+  
   useEffect(() => {
     fetch("http://localhost:3002/jeux")
       .then((response) => response.json())
       .then((data) => setJeux(data))
       .catch((error) => console.error(error));
   }, []);
-
-  const addToCart = (jeuId) => {
-    console.log(`Jeu ajouté au panier: ${jeuId}`);
-  };
 
   const displayGameOverlay = (jeu) => {
     setSelectedGame(jeu);
@@ -39,16 +40,15 @@ const Accueil = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
       <div key={jeu.JeuxID} className="jeu-bulle">
+        <h2>{jeu.Titre}</h2>
+        <p>Note moyenne : {jeu.NoteMoyenne}</p>
+        <p>Prix : {jeu.Prix} $</p>
         <img
-          src="https://static.vecteezy.com/ti/vecteur-libre/p1/22647507-mobile-jeu-icone-pour-votre-site-internet-mobile-presentation-et-logo-conception-gratuit-vectoriel.jpg"
+          src="https://cdn-icons-png.flaticon.com/512/70/70310.png"
           alt="Info"
           onClick={() => displayGameOverlay(jeu)}
           className="info-icon"
         />
-        <h2>{jeu.Titre}</h2>
-        <p>Note moyenne : {jeu.NoteMoyenne}</p>
-        <p>Prix : {jeu.Prix} $</p>
-        <button onClick={() => addToCart(jeu.JeuxID)}>Louer </button>
       </div>
     ));
   };
@@ -64,6 +64,48 @@ const Accueil = () => {
       setStartIndex(startIndex - 6);
     }
   };
+  
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleReturnDateChange = (event) => {
+    setReturnDate(event.target.value);
+  };
+
+  const handleLouerClick = async () => {
+    try {
+      const jeuxid
+      
+      = selectedGame.JeuxID; // Utilisation de selectedGame.JeuxID
+      const UtilisateurID = 123; // Remplacez ceci par l'ID de l'utilisateur actuel
+
+      const response = await fetch('http://localhost:3002/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jeuxid,
+          UtilisateurID,
+          dateDebut: startDate,
+          dateFin: returnDate,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuxid}`);
+        setSelectedGame(null);
+        setStartDate(null);
+        setReturnDate(null);
+      } else {
+        console.error('Erreur lors du paiement :', response.statusText);
+      }
+    } catch (error) {
+      console.error('Erreur lors du paiement :', error);
+    }
+  };
+
 
   return (
     <div className="Body">
@@ -84,10 +126,9 @@ const Accueil = () => {
         </div>
         <div className="top-right-link">
           <Link to="/Panier">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/126/126083.png"
-              alt="Logo Panier"
-            />
+            
+            <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
+            
           </Link>
         </div>
         <div className="Deconnexion">
@@ -129,10 +170,26 @@ const Accueil = () => {
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
-            <button onClick={closeOverlay}>Fermer </button>
+           
+            <input
+              type="date"
+              placeholder="Date de début"
+              value={startDate}
+              onChange={handleStartDateChange}
+            />
+            <input
+              type="date"
+              placeholder="Date de retour"
+              value={returnDate}
+              onChange={handleReturnDateChange}
+            />
+            <button onClick={closeOverlay}><img src="https://cdn.icon-icons.com/icons2/894/PNG/512/Close_Icon_icon-icons.com_69144.png" alt="Fermer" /></button>
+            <button onClick={handleLouerClick }><img src="https://cdn-icons-png.flaticon.com/512/57/57493.png" alt="louer" /></button>
+            
           </div>
         </div>
       )}
+
     </div>
   );
 };

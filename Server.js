@@ -154,24 +154,19 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release();
   }
 });
-app.get("/Panier/:userId", async (req, res) => {
-  const userId = req.params.userId;
 
-  try {
-    const query = `
-      SELECT Locations.LocationID, Jeux.Titre, Jeux.Description, Jeux.NoteMoyenne, Jeux.Prix
-      FROM Locations
-      INNER JOIN Jeux ON Locations.JeuxID = Jeux.JeuxID
-      WHERE Locations.UtilisateurID = ?
-    `;
-    const userGames = await pool.query(query, [userId]);
+// app.post("/locations", async (req, res) => {
+//   let conn;
+//   const { jeuxid, UtilisateurID, dateDebut, dateFin } = req.body;
 
-    res.status(200).json(userGames);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erreur interne du serveur' });
-  }
-});
+//   try {
+//     conn = await pool.getConnection();
+    
+//     // Vérifier si le jeu est disponible ou s'il est déjà loué pour ces dates
+//     const existingLocation = await conn.query(
+//       "SELECT * FROM Locations WHERE jeuxid = ? AND ((DateDebut BETWEEN ? AND ?) OR (DateFin BETWEEN ? AND ?))",
+//       [jeuxid, dateDebut, dateFin, dateDebut, dateFin]
+//     );
 
 app.post("/locations", async (req, res) => {
   const { JeuxID, DateDebut, UtilisateurID } = req.body;
@@ -248,6 +243,22 @@ app.delete("/api/panier/:jeuId", async (req, res) => {
 });
 
 
+//     if (existingLocation.length > 0) {
+//       return res.status(400).json({ error: 'Jeu non disponible pour ces dates' });
+//     }
+
+//     // Insérer la nouvelle location
+//     const query = "INSERT INTO Locations (jeuxid, UtilisateurID, DateDebut, DateFin) VALUES (?, ?, ?, ?)";
+//     const result = await conn.query(query, [jeuxid, UtilisateurID, dateDebut, dateFin]);
+
+//     res.status(201).json({ id: result.insertId, jeuxid, UtilisateurID, dateDebut, dateFin });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   } finally {
+//     if (conn) conn.release();
+//   }
+// });
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
