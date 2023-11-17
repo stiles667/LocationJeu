@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
+* {
+  box-sizing: border-box;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;

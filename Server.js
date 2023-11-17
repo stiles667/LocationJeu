@@ -16,7 +16,6 @@ const pool = mariadb.createPool({
   database: process.env.DB_DTB,
 });
 
-// pour récupérer les données de la table "Articles"
 app.get("/jeux", async (req, res) => {
   let conn;
   try {
@@ -252,4 +251,3 @@ app.delete("/api/panier/:jeuId", async (req, res) => {
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
-

@@ -197,11 +197,6 @@ const Accueil = () => {
         <div className="logo">
           <img src="https://pbs.twimg.com/profile_images/1641935230251532297/CaKypRr__400x400.jpg" alt="Logo Manette" />
         </div>
-        {/* <div className="top-right-link">
-          <Link to="/panier">
-            <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
-          </Link>
-        </div> */}
       </div>
         <div className='ListeDejeux'>
         <h1>Liste des jeux</h1>
@@ -229,17 +224,7 @@ const Accueil = () => {
           </Link>
 
         </div>
-      </div>
-      {/* <div className='ListeDejeux'>
-        <h1>Liste des jeux</h1>
-        <div className="jeux-container">{displayFilteredGames()}</div>
-        <div className="pagination-buttons">
-          <button onClick={handlePrevious}>Précédent</button>
-          <button onClick={handleNext}>Suivant</button>
-        </div>
-      </div> */}
-
-     
+      </div>     
       {selectedGame && (
         <div className="overlay" onClick={closeOverlay}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
