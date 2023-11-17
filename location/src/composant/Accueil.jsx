@@ -36,7 +36,7 @@ const Accueil = () => {
   const displayFilteredGames = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
-      <div key={jeu.JeuxID} className="jeu-bulle">
+      <div key={jeu.JeuxID} className="jeu-bulle" style={{backgroundImage: `url(${jeu.lien_image})`}}>
         <h2>{jeu.Titre}</h2>
         <p>Note moyenne : {jeu.NoteMoyenne}</p>
         <p>Prix : {jeu.Prix} $</p>
