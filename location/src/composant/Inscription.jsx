@@ -10,6 +10,8 @@ function Inscription() {
     MotDePasse: '',
   });
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,6 +27,9 @@ function Inscription() {
       if (response.ok) {
         console.log('User successfully added');
         // Redirection vers une autre page ou toute autre action après l'inscription réussie
+      } else if (response.status === 400) {
+        const data = await response.json();
+        setErrorMessage(data.error);
       } else {
         console.error('Failed to add user');
       }
@@ -41,11 +46,13 @@ function Inscription() {
     });
   };
 
+
   return (
     <div className='inscription'>
       <form onSubmit={handleSubmit}>
         <h1>Inscription</h1>
-
+        {errorMessage && <p>{errorMessage}</p>}
+        {/* {successMessage && <p>{successMessage}</p>} */}
         <label>Nom:</label>
         <input
           type="text"
@@ -82,7 +89,7 @@ function Inscription() {
           S'inscrire
         </button>
 
-        <Link to="/Connexion">Se connecter</Link>
+        <Link to="/">Se connecter</Link>
       </form>
     </div>
   );
