@@ -27,12 +27,13 @@ function Connexion() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        const userID = await response.json();
+      
         console.log('Login successful');
         setLoggedIn(true);
 
-        // Stocke l'ID de l'utilisateur dans le localStorage
-        localStorage.setItem('UtilisateurID', data.UtilisateurID);
+      
+        localStorage.setItem('UtilisateurID', userID);
 
         navigate('/Accueil');
       } else {
