@@ -176,7 +176,7 @@ app.get('/locations', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query('SELECT location.*, jeux.Titre FROM location JOIN jeux ON location.JeuxID = jeux.JeuxID');
+    const rows = await conn.query('SELECT location.*, jeux.Titre, jeux.Prix FROM location JOIN jeux ON location.JeuxID = jeux.JeuxID');
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
