@@ -7,14 +7,15 @@ export default function Panier() {
     const [panier, setPanier] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     useEffect(() => {
-        // Récupère les jeux du panier depuis la base de données
-        fetch('http://localhost:3002/api/panier')
+        // Récupère les jeux de la table "Louer" depuis la base de données
+        fetch('http://localhost:3002/louer')
         .then((response) => response.json())
         .then((data) => {
             setPanier(data);
         })
         .catch((error) => console.error(error));
     }, []);
+
     const removeFromPanier = (jeuId) => {
         console.log('Removing jeu with ID:', jeuId);
         fetch(`http://localhost:3002/api/panier/${jeuId}`, {
@@ -92,6 +93,7 @@ export default function Panier() {
                 {filteredPanier.map((jeu) => (
                 <div key={jeu.JeuxID} className="Panier-card">
                     <p>{jeu.Titre}</p>
+                    {/* Ajoutez d'autres informations du jeu que vous souhaitez afficher */}
                     <button onClick={() => removeFromPanier(jeu.JeuxID)}>Remove</button>
                 </div>
                 ))}

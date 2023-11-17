@@ -7,9 +7,10 @@ const Accueil = () => {
   const [startIndex, setStartIndex] = useState(0);
   const [selectedGame, setSelectedGame] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [returnDate, setReturnDate] = useState(null);
-  const userID = localStorage.getItem('UtilisateurID');
+  const [startDate, setStartDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
+
+  
   useEffect(() => {
     fetch("http://localhost:3002/jeux")
       .then((response) => response.json())
@@ -70,39 +71,73 @@ const Accueil = () => {
     setReturnDate(event.target.value);
   };
 
-  const handleLouerClick = async () => {
-    
-      try {
-        const jeuxid = selectedGame.JeuxID;
-       
-        const UtilisateurID = userID; 
+  // const handleLouerClick = async () => {
+  //   try {
+  //     if (!startDate || !returnDate || startDate >= returnDate) {
+  //       console.error("Plage de dates invalide");
+  //       return;
+  //     }
   
+  //     const jeuxid = selectedGame.JeuxID;
+  //     const UtilisateurID = userID;
+  
+  //     const response = await fetch('http://localhost:3002/locations', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         JeuxID: jeuxid,
+  //         UtilisateurID: UtilisateurID,
+  //         DateDebut: startDate,
+  //         DateFin: returnDate,
+  //       }),
+  //     });
+  
+  //     if (response.ok) {
+  //       console.log(`Paiement réussi pour le jeu avec l'ID ${jeuxid}`);
+  //       setSelectedGame(null);
+  //       setStartDate('');
+  //       setReturnDate('');
+  //       // Peut-être ajouter une notification de succès à l'utilisateur
+  //     } else {
+  //       console.error('Erreur lors du paiement :', response.statusText);
+  //       // Afficher un message d'erreur à l'utilisateur
+  //     }
+  //   } catch (error) {
+  //     console.error('Erreur lors du paiement :', error);
+  //     // Afficher un message d'erreur à l'utilisateur
+  //   }
+  // };
+  
+  const handleLouerClick = async () => {
+    try {
+        const response = await fetch('http://localhost:3002/api/louer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                JeuxID: selectedGame.JeuxID,
+                Titre: selectedGame.Titre,
+                Description: selectedGame.Description,
+                NoteMoyenne: selectedGame.NoteMoyenne,
+                Prix: selectedGame.Prix,
+            }),
+        });
 
-      const response = await fetch('http://localhost:3002/locations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          jeuxid,
-          UtilisateurID,
-          dateDebut: startDate,
-          dateFin: returnDate,
-        }),
-      });
-
-      if (response.ok) {
-        console.log(`Paiement réussi pour le jeu avec l'ID ${jeuxid}`);
-        setSelectedGame(null);
-        setStartDate(null);
-        setReturnDate(null);
-      } else {
-        console.error('Erreur lors du paiement :', response.statusText);
-      }
+        if (response.ok) {
+            console.log('Jeu ajouté avec succès à la table louer');
+            setSelectedGame(null);
+        } else {
+            console.error('Erreur lors de l\'ajout du jeu :', response.statusText);
+        }
     } catch (error) {
-      console.error('Erreur lors du paiement :', error);
+        console.error('Erreur lors de l\'ajout du jeu :', error);
     }
-  };
+};
+
+  
 
 
   return (

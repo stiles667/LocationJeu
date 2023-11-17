@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Inscription.css';
 
+
 function Inscription() {
   const [formData, setFormData] = useState({
     Nom: '',
@@ -14,7 +15,7 @@ function Inscription() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch('http://localhost:3002/Inscription', {
         method: 'POST',
@@ -23,10 +24,19 @@ function Inscription() {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         console.log('User successfully added');
+        
+        const { message, utilisateurID } = await response.json();
+        console.log(message);
+        console.log(utilisateurID);
+  
+        // Stocke l'ID de l'utilisateur dans le local storage
+        localStorage.setItem('UtilisateurID', utilisateurID);
+  
         // Redirection vers une autre page ou toute autre action après l'inscription réussie
+        
       } else if (response.status === 400) {
         const data = await response.json();
         setErrorMessage(data.error);
@@ -37,6 +47,7 @@ function Inscription() {
       console.error('Error:', error);
     }
   };
+  
 
   const handleInput = (e) => {
     const { name, value } = e.target;

@@ -16,7 +16,7 @@ function Connexion() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch('http://localhost:3002/login', {
         method: 'POST',
@@ -25,24 +25,28 @@ function Connexion() {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
-        const userID = await response.json();
-      
-        console.log('Login successful');
+        const data = await response.json();
+  
+        console.log(data.message); // Affiche "Login successful"
+        console.log(data.utilisateurID); // Ajoute cette ligne pour déboguer
+  
         setLoggedIn(true);
-
-      
-        localStorage.setItem('UtilisateurID', userID);
-
+        localStorage.setItem('UtilisateurID', data.utilisateurID);
+  
         navigate('/Accueil');
       } else {
-        setError('Identifiants incorrects');
+        const errorData = await response.json();
+        setError(errorData.error || 'Identifiants incorrects');
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
+  
+  
 
   
   const handleInput = (e) => {

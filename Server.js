@@ -94,6 +94,38 @@ app.post("/Users", async (req, res) => {
   }
 });
 
+// app.post("/Inscription", async (req, res) => {
+//   let conn;
+//   const { Nom, Prenom, Email, MotDePasse } = req.body;
+
+//   try {
+//     conn = await pool.getConnection();
+
+//     // Check if email already exists
+//     const users = await conn.query("SELECT * FROM Users WHERE Email = ?", [Email]);
+
+//     if (users.length > 0) {
+//       // If a user is found, send an error response
+//       return res.status(400).json({ error: 'Email already exists' });
+//     }
+
+//     // Hash the password
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(MotDePasse, salt);
+
+//     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
+    
+//     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
+    
+//     res.status(201).json({ id: result.insertId, Nom, Prenom, Email });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   } finally {
+//     if (conn) conn.release();
+//   }
+// });
+
 app.post("/Inscription", async (req, res) => {
   let conn;
   const { Nom, Prenom, Email, MotDePasse } = req.body;
@@ -126,6 +158,8 @@ app.post("/Inscription", async (req, res) => {
   }
 });
 
+
+
 app.post("/login", async (req, res) => {
   const { Email, MotDePasse } = req.body;
   let conn;
@@ -139,8 +173,10 @@ app.post("/login", async (req, res) => {
 
     if (result.length > 0) {
       const user = result[0];
-      if (user.MotDePasse === MotDePasse) {
-        res.status(200).json({ message: 'Login successful' });
+      const match = await bcrypt.compare(MotDePasse, user.MotDePasse);
+
+      if (match) {
+        res.status(200).json({ message: 'Login successful', utilisateurID: user.UtilisateurID });
       } else {
         res.status(401).json({ error: 'Invalid credentials' });
       }
@@ -155,55 +191,12 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// app.post("/locations", async (req, res) => {
-//   let conn;
-//   const { jeuxid, UtilisateurID, dateDebut, dateFin } = req.body;
 
-//   try {
-//     conn = await pool.getConnection();
-    
-//     // Vérifier si le jeu est disponible ou s'il est déjà loué pour ces dates
-//     const existingLocation = await conn.query(
-//       "SELECT * FROM Locations WHERE jeuxid = ? AND ((DateDebut BETWEEN ? AND ?) OR (DateFin BETWEEN ? AND ?))",
-//       [jeuxid, dateDebut, dateFin, dateDebut, dateFin]
-//     );
-
-app.post("/locations", async (req, res) => {
-  const { JeuxID, DateDebut, UtilisateurID } = req.body;
-
+app.get("/louer", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-
-    // Vérifie si le jeu existe dans la table "Jeux"
-    const checkJeuQuery = "SELECT * FROM Jeux WHERE JeuxID = ?";
-    const checkJeuResult = await conn.query(checkJeuQuery, [JeuxID]);
-
-    if (checkJeuResult.length > 0) {
-      // Le jeu existe, ajoute la location à la table "Locations"
-      const addLocationQuery =
-        "INSERT INTO Locations (JeuxID, DateDebut, UtilisateurID) VALUES (?, ?, ?)";
-      const addLocationResult = await conn.query(addLocationQuery, [JeuxID, DateDebut, UtilisateurID]);
-
-      res.status(201).json({ message: 'Location ajoutée au panier' });
-    } else {
-      // Le jeu n'existe pas dans la table "Jeux"
-      res.status(404).json({ error: 'JeuxID not found' });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
-
-
-app.get("/api/panier", async (req, res) => {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const rows = await conn.query("SELECT * FROM locations");
+    const rows = await conn.query("SELECT * FROM louer");
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
@@ -212,6 +205,61 @@ app.get("/api/panier", async (req, res) => {
     if (conn) conn.release();
   }
 });
+
+
+
+// app.post("/locations", async (req, res) => {
+//   const { JeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
+
+//   let conn;
+//   try {
+//     conn = await pool.getConnection();
+
+//     // Verify if the game exists in the "Jeux" table
+//     const checkJeuQuery = "SELECT * FROM Jeux WHERE JeuxID = ?";
+//     const checkJeuResult = await conn.query(checkJeuQuery, [JeuxID]);
+
+//     if (checkJeuResult.length > 0) {
+//       // The game exists, add the location to the "Locations" table
+//       const addLocationQuery =
+//         "INSERT INTO Locations (JeuxID, DateDebut, DateFin, UtilisateurID) VALUES (?, ?, ?, ?)";
+//       const addLocationResult = await conn.query(addLocationQuery, [JeuxID, DateDebut, DateFin, UtilisateurID]);
+
+//       res.status(201).json({ message: 'Location ajoutée au panier' });
+//     } else {
+//       // The game does not exist in the "Jeux" table
+//       res.status(404).json({ error: 'JeuxID not found' });
+//     }
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   } finally {
+//     if (conn) conn.release();
+//   }
+// });
+
+
+app.post("/api/louer", async (req, res) => {
+  const { JeuxID, Titre, Description, NoteMoyenne, Prix } = req.body;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Ajoutez le jeu à la table "louer"
+    const addLouerQuery =
+      "INSERT INTO louer (JeuxID, Titre, Description, NoteMoyenne, Prix) VALUES (?, ?, ?, ?, ?)";
+    const addLouerResult = await conn.query(addLouerQuery, [JeuxID, Titre, Description, NoteMoyenne, Prix]);
+
+    res.status(201).json({ message: 'Jeu ajouté à la table louer' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 
 app.delete("/api/panier/:jeuId", async (req, res) => {
   const { jeuId } = req.params;
