@@ -155,7 +155,7 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release();
   }
 });
-app.get("/panier/:userId", async (req, res) => {
+app.get("/Panier/:userId", async (req, res) => {
   const userId = req.params.userId;
 
   try {

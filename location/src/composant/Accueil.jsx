@@ -127,6 +127,14 @@ const Accueil = () => {
       })
       .catch((error) => console.error(error));
   };
+
+  const filteredGames = jeux.filter((jeu) =>
+    jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
   
   
 
@@ -146,13 +154,9 @@ const Accueil = () => {
         <p>Note moyenne : {jeu.NoteMoyenne}</p>
         <p>Prix : {jeu.Prix} $</p>
         <button onClick={() => addToCart(jeu.JeuxID)}>Ajouter au panier</button>
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+      </div>
+    ));
   };
-
-  const filteredGames = jeux.filter((jeu) =>
-    jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const displayFilteredGames = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
@@ -183,6 +187,8 @@ const Accueil = () => {
       setStartIndex(startIndex - 6);
     }
   };
+
+  
   
 
   return (
@@ -191,15 +197,19 @@ const Accueil = () => {
         <div className="logo">
           <img src="https://pbs.twimg.com/profile_images/1641935230251532297/CaKypRr__400x400.jpg" alt="Logo Manette" />
         </div>
-        <div className="top-right-link">
+        {/* <div className="top-right-link">
           <Link to="/panier">
             <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
           </Link>
-        </div>
+        </div> */}
       </div>
-      <div className='ListeDejeux'>
+        <div className='ListeDejeux'>
         <h1>Liste des jeux</h1>
-        <div className="jeux-container">{displayGames()}</div>
+        <div className="jeux-container">{displayFilteredGames()}</div>
+        <div className="pagination-buttons">
+          <button onClick={handlePrevious}>Précédent</button>
+          <button onClick={handleNext}>Suivant</button>
+        </div>
         <div className="search-bar">
           <input
             type="text"
@@ -220,14 +230,14 @@ const Accueil = () => {
 
         </div>
       </div>
-      <div className='ListeDejeux'>
+      {/* <div className='ListeDejeux'>
         <h1>Liste des jeux</h1>
         <div className="jeux-container">{displayFilteredGames()}</div>
         <div className="pagination-buttons">
           <button onClick={handlePrevious}>Précédent</button>
           <button onClick={handleNext}>Suivant</button>
         </div>
-      </div>
+      </div> */}
 
      
       {selectedGame && (

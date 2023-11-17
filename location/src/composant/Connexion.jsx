@@ -27,6 +27,7 @@ function Connexion() {
       if (response.ok) {
         console.log('Login successful');
         setLoggedIn(true);
+        // localStorage.setItem('utilisateurId', utilisateurId);
         navigate('/Accueil'); // Redirige vers la page Accueil
       } else {
         setError('Identifiants incorrects'); // Définit le message d'erreur
