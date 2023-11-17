@@ -16,8 +16,8 @@ const pool = mariadb.createPool({
   database: process.env.DB_DTB,
 });
 
-
-app.get("/api/jeux", async (req, res) => {
+// pour récupérer les données de la table "Articles"
+app.get("/jeux", async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -41,18 +41,26 @@ app.post("/login", async (req, res) => {
 
   try {
     conn = await pool.getConnection();
-    
-    // Assuming you have a table named "Users" with columns: Email, MotDePasse
-    const query = "SELECT * FROM Users WHERE Email = ? AND MotDePasse = ?";
-    
-    const result = await conn.query(query, [Email, MotDePasse]);
 
-    if (result.length > 0) {
-      // User found, login successful
-      res.status(200).json({ message: 'Login successful' });
+    // Get the user with the provided email
+    const users = await conn.query("SELECT * FROM Users WHERE Email = ?", [Email]);
+
+    if (users.length > 0) {
+      const user = users[0];
+
+      // Compare the hashed password with the provided password
+      const match = await bcrypt.compare(MotDePasse, user.MotDePasse);
+
+      if (match) {
+        // If the passwords match, send a success response
+        res.status(200).json({ message: 'Successfully logged in' });
+      } else {
+        // If the passwords do not match, send an error response
+        res.status(400).json({ error: 'Invalid password' });
+      }
     } else {
-      // User not found or incorrect credentials
-      res.status(401).json({ error: 'Invalid credentials' });
+      // If no user is found, send an error response
+      res.status(400).json({ error: 'User not found' });
     }
   } catch (err) {
     console.error(err);
@@ -76,7 +84,7 @@ app.post("/Users", async (req, res) => {
     req.body.password = hashedPassword;
     const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
-    const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
+    // const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
     
     res.status(201).json({ id: result.insertId, Nom, Prenom, Email });
   } catch (err) {
@@ -145,6 +153,24 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   } finally {
     if (conn) conn.release();
+  }
+});
+app.get("/panier/:userId", async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const query = `
+      SELECT Locations.LocationID, Jeux.Titre, Jeux.Description, Jeux.NoteMoyenne, Jeux.Prix
+      FROM Locations
+      INNER JOIN Jeux ON Locations.JeuxID = Jeux.JeuxID
+      WHERE Locations.UtilisateurID = ?
+    `;
+    const userGames = await pool.query(query, [userId]);
+
+    res.status(200).json(userGames);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur interne du serveur' });
   }
 });
 
