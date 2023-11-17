@@ -89,7 +89,7 @@ function Inscription() {
           S'inscrire
         </button>
 
-        <Link to="/">Se connecter</Link>
+        <Link to="/Connexion">Se connecter</Link>
       </form>
     </div>
   );
