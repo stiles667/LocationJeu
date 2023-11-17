@@ -1,0 +1,155 @@
+/* Styles pour la barre de navigation */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+.search-bar{
+  display: flex;
+  margin-left: 65%;
+  margin-top: 2%;
+
+}
+.Deconnexion {
+  margin-left: 10px; /* Marge à gauche pour l'espacement */
+}
+.Deconnexion img {
+  width: 40px;
+  margin-right: 50px;
+}
+
+.logo img {
+  width: 80px;
+}
+
+.top-right-link {
+  display: flex;
+  align-items: center;
+}
+
+.top-right-link img {
+  width: 40px;
+  margin-right: 2px;
+}
+.Body{
+  margin-top: 100px;
+ display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Styles pour la liste des jeux */
+.ListeDejeux {
+  max-width: 1200px;
+  margin: 70px auto 20px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 50px;
+  z-index: 998;
+  background-color: #ffffff;
+}
+
+.jeux-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.jeu-bulle {
+  width: calc(33% - 20px);
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.jeu-bulle h2 {
+  font-size: 18px; /* Redéfinition de la taille de police pour les titres des jeux */
+  margin-bottom: 8px; /* Ajustement de l'espacement sous les titres */
+}
+
+/* Styles pour les boutons de pagination */
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.pagination-buttons button {
+  padding: 8px 12px;
+  font-size: 14px;
+  max-width: 100px;
+  width: 100%;
+}
+
+/* Styles pour l'overlay et son contenu */
+.overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  max-width: 500px; /* Largeur maximale de l'overlay */
+  max-height: 500px; /* Hauteur maximale de l'overlay */
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.overlay-content {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.overlay-inner {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  right:80%;
+  
+}
