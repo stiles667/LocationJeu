@@ -1,4 +1,10 @@
 /* Styles pour la barre de navigation */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
+* {
+  box-sizing: border-box;
+  font-family: 'Bebas Neue', sans-serif;
+}
+
 .header {
   position: fixed;
   top: 0;

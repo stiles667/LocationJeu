@@ -16,7 +16,6 @@ const pool = mariadb.createPool({
   database: process.env.DB_DTB,
 });
 
-// pour récupérer les données de la table "Articles"
 app.get("/jeux", async (req, res) => {
   let conn;
   try {
@@ -155,26 +154,7 @@ app.post("/login", async (req, res) => {
     if (conn) conn.release();
   }
 });
-app.get("/panier/:userId", async (req, res) => {
-  const userId = req.params.userId;
-
-  try {
-    const query = `
-      SELECT Locations.LocationID, Jeux.Titre, Jeux.Description, Jeux.NoteMoyenne, Jeux.Prix
-      FROM Locations
-      INNER JOIN Jeux ON Locations.JeuxID = Jeux.JeuxID
-      WHERE Locations.UtilisateurID = ?
-    `;
-    const userGames = await pool.query(query, [userId]);
-
-    res.status(200).json(userGames);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erreur interne du serveur' });
-  }
-});
 
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
-
