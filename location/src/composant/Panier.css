@@ -1,0 +1,84 @@
+/* Styles pour la barre de navigation */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+  
+  .search-bar {
+    display: flex;
+    margin-left: 65%;
+    margin-top: 2%;
+  }
+  
+  .Deconnexion {
+    margin-left: 10px; /* Marge à gauche pour l'espacement */
+  }
+  
+  .Deconnexion img {
+    width: 40px;
+    margin-right: 50px;
+  }
+  
+  .logo img {
+    width: 80px;
+  }
+  
+  .top-right-link {
+    display: flex;
+    align-items: center;
+  }
+  
+  .top-right-link img {
+    width: 40px;
+    margin-right: 2px;
+  }
+  
+  .Body {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .locations-list {
+    max-width: 1200px;
+    margin: 70px auto 20px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap; /* Permet aux éléments de se retourner à la ligne */
+    justify-content: space-between; /* Les éléments sont répartis avec un espacement égal entre eux */
+    align-items: stretch; /* Les éléments prennent toute la hauteur */
+    position: sticky;
+    top: 50px;
+    z-index: 998;
+    background-color: #ffffff;
+  }
+  
+  .locations-list ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%; /* Ajuste la largeur de la liste */
+  }
+  
+  .locations-list li {
+    width: calc(33.33% - 20px); /* Trois éléments par ligne */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Autres styles pour chaque élément */
+  }

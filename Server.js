@@ -160,7 +160,7 @@ app.post('/location',async (req, res) => {
   const { jeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
   conn = await pool.getConnection();
 
-  const INSERT_LOCATION_QUERY = 'INSERT INTO locations (jeuxID, dateDebut, dateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
+  const INSERT_LOCATION_QUERY = 'INSERT INTO location (jeuxID, dateDebut, dateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
 
   conn.query(INSERT_LOCATION_QUERY, [jeuxID, DateDebut, DateFin, UtilisateurID], (err, results) => {
     if (err) {
@@ -171,6 +171,20 @@ app.post('/location',async (req, res) => {
       res.status(200).send('Jeu loué avec succès !');
     }
   });
+});
+
+app.get('/locations', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query('SELECT * FROM Locations');
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
 });
 
 

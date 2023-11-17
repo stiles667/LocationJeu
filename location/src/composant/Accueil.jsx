@@ -123,7 +123,7 @@ const louerJeu = async () => {
     <div className='Body'>
       <div className="header">
         <div className="logo">
-          <img src="https://pbs.twimg.com/profile_images/1641935230251532297/CaKypRr__400x400.jpg" alt="Logo Manette" />
+          <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
         </div>
         <div className="search-bar">
           <input
