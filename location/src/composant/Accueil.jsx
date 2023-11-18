@@ -1,8 +1,6 @@
-// Accueil.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Accueil.css'; 
+import './Accueil.css';
 
 const Accueil = () => {
   const [jeux, setJeux] = useState([]);
@@ -11,13 +9,41 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-  
+  const [selectedGameDetails, setSelectedGameDetails] = useState(null);
+  const [userComments, setUserComments] = useState([]);
+  const selectedGameId = 'Jeuxid';  // Cela semble inutilisé, vous pouvez le supprimer si nécessaire
+
+  useEffect(() => {
+    const UtilisateurID = localStorage.getItem('UtilisateurID');
+
+    fetch(`http://localhost:3002/Commentaire/Users/${UtilisateurID}`)
+      .then(response => response.json())
+      .then(data => setUserComments(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
       .then((data) => setJeux(data))
       .catch((error) => console.error(error));
   }, []);
+
+  
+  useEffect(() => {
+    if (selectedGame) {
+      fetch(`http://localhost:3002/jeux/${selectedGame.JeuxID}/commentaires`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => setUserComments(data))
+        .catch(error => console.error('Error:', error));
+    }
+  }, [selectedGame]);
+       
 
   const displayGameOverlay = (jeu) => {
     setSelectedGame(jeu);
@@ -38,7 +64,7 @@ const Accueil = () => {
   const displayFilteredGames = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
-      <div key={jeu.JeuxID} className="jeu-bulle" style={{backgroundImage: `url(${jeu.lien_image})`}}>
+      <div key={jeu.JeuxID} className="jeu-bulle" style={{ backgroundImage: `url(${jeu.lien_image})` }}>
         <h2>{jeu.Titre}</h2>
         <p>Note moyenne : {jeu.NoteMoyenne}</p>
         <p>Prix : {jeu.Prix} $</p>
@@ -63,7 +89,7 @@ const Accueil = () => {
       setStartIndex(startIndex - 6);
     }
   };
-  
+
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
@@ -76,7 +102,7 @@ const Accueil = () => {
     try {
       if (startDate && returnDate && selectedGame) {
         const userId = localStorage.getItem('UtilisateurID');
-        
+
         if (userId) {
           const locationData = {
             jeuxID: selectedGame.JeuxID,
@@ -84,7 +110,7 @@ const Accueil = () => {
             DateFin: returnDate,
             UtilisateurID: userId,
           };
-          
+
           console.log(locationData);
 
           const response = await fetch('http://localhost:3002/location', {
@@ -101,7 +127,7 @@ const Accueil = () => {
             console.error('Erreur lors de la location du jeu.');
           }
         } else {
-          console.error('L\'ID de l\'utilisateur n\'est pas disponible dans le localStorage.');
+          console.error("L'ID de l'utilisateur n'est pas disponible dans le localStorage.");
         }
       } else {
         console.error('Veuillez sélectionner un jeu et des dates valides.');
@@ -112,12 +138,12 @@ const Accueil = () => {
   };
 
   return (
-    <div className='Body'>
+    <div className="Body">
       <div className="header">
         <div className="logo">
           <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
         </div>
-        <h1 className='name'>GAMING HUB</h1>
+        <h1 className="name">GAMING HUB</h1>
         <div className="search-bar">
           <input
             type="text"
@@ -131,13 +157,13 @@ const Accueil = () => {
             <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
           </Link>
         </div>
-        <div className='Deconnexion'>
+        <div className="Deconnexion">
           <Link to="/">
             <img src="https://cdn-icons-png.flaticon.com/512/4400/4400629.png" alt="Logo Deconnexion" />
           </Link>
         </div>
       </div>
-      <div className='ListeDejeux'>
+      <div className="ListeDejeux">
         <h1>Liste des jeux</h1>
         <div className="jeux-container">{displayFilteredGames()}</div>
         <div className="pagination-buttons">
@@ -147,13 +173,20 @@ const Accueil = () => {
       </div>
 
       {selectedGame && (
-        <div className="overlay" onClick={closeOverlay}>  
+        <div className="overlay" onClick={closeOverlay}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-            <h1 className>{selectedGame.Titre}</h1>
+            <h1>{selectedGame.Titre}</h1>
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
-           
+            <div className="commentaires">
+              {userComments.map((commentaire) => (
+                <div key={commentaire.CommentaireID}>
+                  <p>commentaire :{commentaire.Commentaire}</p>
+                  
+                </div>
+              ))}
+            </div>
             <input
               type="date"
               placeholder="Date de début"

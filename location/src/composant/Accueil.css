@@ -104,6 +104,8 @@
   display: flex;
   justify-content: center;
   margin-top: 10px;
+  gap: 10px;
+  
 }
 
 .pagination-buttons button {
@@ -187,10 +189,11 @@
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
 }
 .jeu-bulle{
+  color: #ffffff;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #ffffff;
+  background-color: #000000;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;

@@ -91,7 +91,7 @@ export default function Panier() {
                 <button type="button">Retour à l'accueil</button>
               </Link>
               <Link to="/avis">
-                <button type="button">Voir/Laisser des avis</button>
+                {/* <button type="button">Voir/Laisser des avis</button> */}
               </Link>
             </div>
           </>
