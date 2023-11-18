@@ -17,6 +17,8 @@ const pool = mariadb.createPool({
   database: process.env.DB_DTB,
 });
 
+
+// ici on utilise un GET pour afficher tout nos jeux présent dans notre table Jeux dans notre base de donnée 
 app.get("/jeux", async (req, res) => {
   let conn;
   try {
@@ -31,6 +33,8 @@ app.get("/jeux", async (req, res) => {
   }
 });
 
+
+//ici on ajoute les informations de l'utilisateur connecté a partir de la page connexion
 app.post("/login", async (req, res) => {
   const { Email, MotDePasse } = req.body;
   let conn;
@@ -61,6 +65,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+//ici on a ce qui nous permet d'ajouter les infromations du user inscrit depuis la page inscritpion
 app.post("/inscription", async (req, res) => {
   let conn;
   const { Nom, Prenom, Email, MotDePasse } = req.body;
@@ -71,7 +77,7 @@ app.post("/inscription", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(MotDePasse, salt);
 
-    const query = "INSERT INTO Users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
+    const query = "INSERT INTO users (Nom, Prenom, Email, MotDePasse) VALUES (?, ?, ?, ?)";
     
     const result = await conn.query(query, [Nom, Prenom, Email, hashedPassword]);
     
@@ -84,30 +90,33 @@ app.post("/inscription", async (req, res) => {
   }
 });
 
-app.post('/location', async (req, res) => {
+//ce app.post nous permet d'ajouter les jeux louer dans la table locations 
+app.post('/locations', async (req, res) => {
   const { JeuxID, DateDebut, DateFin, UtilisateurID } = req.body;
   let conn;
 
   try {
     conn = await pool.getConnection();
-    const INSERT_LOCATION_QUERY = 'INSERT INTO Location (JeuxID, DateDebut, DateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
+    const INSERT_locations_QUERY = 'INSERT INTO locations (JeuxID, DateDebut, DateFin, UtilisateurID) VALUES (?, ?, ?, ?)';
     
-    await conn.query(INSERT_LOCATION_QUERY, [JeuxID, DateDebut, DateFin, UtilisateurID]);
+    await conn.query(INSERT_locations_QUERY, [JeuxID, DateDebut, DateFin, UtilisateurID]);
     
     res.status(200).send('Jeu loué avec succès !');
   } catch (err) {
-    console.error('Erreur lors de l\'insertion des données de location : ', err);
-    res.status(500).send('Erreur lors de la location du jeu.');
+    console.error('Erreur lors de l\'insertion des données de locations : ', err);
+    res.status(500).send('Erreur lors de la locations du jeu.');
   } finally {
     if (conn) conn.release();
   }
 });
 
-app.get('/location', async (req, res) => {
+
+//et ici on récupére les jeux ajouter précédemment depuis la meme table pour les afficher dans la page panier
+app.get('/locations', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
-    const rows = await conn.query('SELECT Location.*, Jeux.Titre, Jeux.Prix FROM Location JOIN Jeux ON Location.JeuxID = Jeux.JeuxID');
+    const rows = await conn.query('SELECT locations.*, Jeux.Titre, Jeux.Prix FROM locations JOIN Jeux ON locations.JeuxID = Jeux.JeuxID');
     res.status(200).json(rows);
   } catch (err) {
     console.error(err);
@@ -117,22 +126,24 @@ app.get('/location', async (req, res) => {
   }
 });
 
-app.get('/location/users/:UtilisateurID', async (req, res) => {
+
+//ici on Get les jeux louer par l'utilisateur spécifié dans l'utilisateurID
+app.get('/locations/users/:UtilisateurID', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
     const UtilisateurID = req.params.UtilisateurID;
 
     const rows = await conn.query(`
-      SELECT Location.*, Jeux.Titre, Jeux.Prix
-      FROM Location
-      JOIN Jeux ON Location.JeuxID = Jeux.JeuxID
-      WHERE Location.UtilisateurID = ?
+      SELECT locations.*, Jeux.Titre, Jeux.Prix
+      FROM locations
+      JOIN Jeux ON locations.JeuxID = Jeux.JeuxID
+      WHERE locations.UtilisateurID = ?
     `, [UtilisateurID]);
 
     res.status(200).json(rows);
   } catch (err) {
-    console.error("Erreur lors de la récupération des locations :", err);
+    console.error("Erreur lors de la récupération des locationss :", err);
     res.status(500).send("Erreur interne du serveur");
   } finally {
     if (conn) {
@@ -140,6 +151,7 @@ app.get('/location/users/:UtilisateurID', async (req, res) => {
     }
   }
 });
+
 
 app.post("/note", async (req, res) => {
   let conn;
@@ -177,7 +189,7 @@ app.get('/jeux/:jeuxID/commentaires', async (req, res) => {
   try {
     conn = await pool.getConnection();
     const { jeuxID } = req.params;
-    const rows = await conn.query('SELECT Commentaire, UtilisateurID FROM Location WHERE JeuxID = ?', [jeuxID]);
+    const rows = await conn.query('SELECT commentaire, UtilisateurID FROM locations WHERE JeuxID = ?', [jeuxID]);
     res.status(200).json(rows);
     console.log("error "+rows);
   } catch (err) {
@@ -194,7 +206,7 @@ app.post("/commentaire", async (req, res) => {
   try {
     conn = await pool.getConnection();
     const { jeuxID } = req.params;
-    const rows = await conn.query('SELECT Commentaire, UtilisateurID FROM Location WHERE JeuxID = ?', [jeuxID]);
+    const rows = await conn.query('SELECT commentaire, UtilisateurID FROM locations WHERE JeuxID = ?', [jeuxID]);
     res.status(200).json(rows);
     console.log("error "+rows);
   } catch (err) {

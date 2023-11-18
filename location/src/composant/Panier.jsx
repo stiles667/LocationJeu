@@ -1,91 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './Panier.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./Panier.css";
 
 export default function Panier() {
-  const [locations, setLocations] = useState([]);
+
+  const [locationss, setlocationss] = useState([]);
   const [jeux, setJeux] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [purchaseValidated, setPurchaseValidated] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
-  const utilisateurID = localStorage.getItem('UtilisateurID'); // Renommé UtilisateurID à utilisateurID
-  // Ajout d'une constante panier manquante
-  const [panier, setPanier] = useState([]);
+  const UtilisateurID = localStorage.getItem("UtilisateurID");
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
+//  handlePurchaseValidation nous permet de valider nos achat
   const handlePurchaseValidation = async () => {
-    const newTotalAmount = locations.reduce((total, location) => {
-      const dateDebut = new Date(location.DateDebut);
-      const dateFin = new Date(location.DateFin);
+    const newTotalAmount = locationss.reduce((total, locations) => {
+      const dateDebut = new Date(locations.DateDebut);
+      const dateFin = new Date(locations.DateFin);
+      // on calcule le nombre de jours entre la date de debut et la date de fin
       const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
-      return total + days * location.Prix;
+      return total + days * locations.Prix;
     }, 0);
-
+    // ici  on a le montant total de la commande
     setTotalAmount(newTotalAmount);
     setPurchaseValidated(true);
   };
-
+// ici on a la fonction qui va afficher les jeux qui sont dans le panier
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchlocationss = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/location/users/${utilisateurID}`);
+        const response = await fetch(`http://localhost:3002/locations/users/${UtilisateurID}`);
         if (response.ok) {
           const data = await response.json();
-          setLocations(data);
+          setlocationss(data);
         } else {
-          console.error("L'ID de l'utilisateur n'est pas disponible ou n'est pas valide.");
+          throw new Error("Failed to fetch data");
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération des emplacements:", error);
+        console.error("Error fetching data:", error);
       }
-    };
-
-    const removeFromPanier = (jeuId) => {
-      console.log('Removing jeu with ID:', jeuId);
-      fetch(`http://localhost:3002/api/panier/${jeuId}`, {
-        method: 'DELETE',
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Response after removal:', data);
-          setPanier((prevPanier) => prevPanier.filter((jeu) => jeu.JeuxID !== jeuId));
-        })
-        .catch((error) => console.error(error));
-    };
-
-    const removeAllFromPanier = () => {
-      // Envoie une requête DELETE pour vider entièrement le panier dans la base de données
-      fetch('http://localhost:3002/api/panier', {
-        method: 'DELETE',
-      })
-        .then((response) => response.json())
-        .then(() => {
-          // Met à jour l'état local du panier après la suppression
-          setPanier([]);
-        })
-        .catch((error) => console.error(error));
     };
 
     const fetchJeux = async () => {
       try {
-        const response = await fetch('http://localhost:3002/jeux');
+        const response = await fetch("http://localhost:3002/jeux");
         if (response.ok) {
           const data = await response.json();
           setJeux(data);
         } else {
-          throw new Error('Échec de la récupération des données de jeux');
+          throw new Error("Failed to fetch jeux data");
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération des données de jeux:', error);
+        console.error("Error fetching jeux data:", error);
       }
     };
 
-    fetchLocations();
+    fetchlocationss();
     fetchJeux();
-  }, [utilisateurID]);
+  }, [UtilisateurID]);
 
   return (
     <div className="Body">
@@ -102,10 +76,15 @@ export default function Panier() {
 
         <div className="logo">
           <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
-        </div>
+          </div>
+
+
+
+
+      
       </div>
-      <div className="locations-list">
-        <h2>Locations</h2>
+      <div className="locationss-list">
+        <h2>locationss</h2>
         {purchaseValidated ? (
           <>
             <h1>Achat validé! Montant total: {totalAmount} $</h1>
@@ -113,17 +92,19 @@ export default function Panier() {
               <Link to="/Accueil">
                 <button type="button">Retour à l'accueil</button>
               </Link>
-              <Link to="/avis">{/* <button type="button">Voir/Laisser des avis</button> */}</Link>
+              <Link to="/avis">
+                {/* <button type="button">Voir/Laisser des avis</button> */}
+              </Link>
             </div>
           </>
         ) : (
           <ul>
-            {locations.map((location, index) => {
-              const jeu = jeux.find((j) => j.JeuxID === location.JeuxID);
-              const dateDebut = new Date(location.DateDebut);
-              const dateFin = new Date(location.DateFin);
+            {locationss.map((locations, index) => {
+              const jeu = jeux.find((j) => j.JeuxID === locations.JeuxID);
+              const dateDebut = new Date(locations.DateDebut);
+              const dateFin = new Date(locations.DateFin);
               const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
-              const totalPrice = days * location.Prix;
+              const totalPrice = days * locations.Prix;
 
               return (
                 <li className="carr" key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
@@ -140,7 +121,9 @@ export default function Panier() {
             })}
           </ul>
         )}
-        {!purchaseValidated && <button onClick={handlePurchaseValidation}>Valider les achats</button>}
+        {!purchaseValidated && (
+          <button onClick={handlePurchaseValidation}>Valider les achats</button>
+        )}
       </div>
     </div>
   );

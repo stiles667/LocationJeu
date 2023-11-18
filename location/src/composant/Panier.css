@@ -17,24 +17,55 @@ h1{
     top: 0;
     left: 0;
     width: 100%;
-    max-width: 400px; /* Par exemple, ajustez la largeur maximale selon vos préférences */
-    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
     background-color: transparent;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 999;
   }
   
-  .Panier {
+  .search-bar {
     display: flex;
-    flex-wrap: wrap;
+    margin-left: 65%;
+    margin-top: 2%;
+  }
+  
+  .Deconnexion {
+    margin-left: 10px; /* Marge à gauche pour l'espacement */
+  }
+  
+  .Deconnexion img {
+    width: 40px;
+    margin-right: 50px;
+  }
+  
+  .logo img {
+    width: 80px;
+  }
+  
+  .top-right-link {
+    display: flex;
+    align-items: center;
+  }
+  
+  .top-right-link img {
+    width: 40px;
+    margin-right: 2px;
+  }
+  
+  .Body {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
   }
   
-  /* Style des cartes de Pokemon dans le Panier */
-  .Panier-card {
-    width: 200px;
-    margin: 10px;
+  .locations-list {
+    max-width: 1200px;
+    margin: 70px auto 20px;
     padding: 10px;
     display: flex;
     flex-wrap: wrap; /* Permet aux éléments de se retourner à la ligne */

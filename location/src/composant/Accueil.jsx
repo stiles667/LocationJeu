@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Accueil.css';
-// ici aussi on a un tableau de jeux, et on veut afficher les jeux qui sont dans le panier
+
+
 const Accueil = () => {
   const [jeux, setJeux] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -9,21 +10,19 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-  const [selectedGameDetails, setSelectedGameDetails] = useState(null);
-  const [userComments, setUserComments] = useState([]);
-  const selectedGameId = 'Jeuxid';  
-// ici on a la fonction qui va afficher les jeux qui sont dans le panier
+  const [userComments, setUserComments] = useState([]); 
+
+  // ici on utilise le local storage pour enregistrer l'id de l'utilisateur connecté et ainsi l'utiliser pour afficher les jeux louer par lui meme dans panier
   useEffect(() => {
     const UtilisateurID = localStorage.getItem('UtilisateurID');
-//ici on fait une requete pour afficher les commentaires
     fetch(`http://localhost:3002/Commentaire/Users/${UtilisateurID}`)
       .then(response => response.json())
       .then(data => setUserComments(data))
       .catch(error => console.error('Error:', error));
   }, []);
-// ici on va afficher les jeux qui sont dans le panier
+
   useEffect(() => {
-    fetch('http://localhost:3002/jeux')
+    fetch('http://localhost:3002/Jeux')
       .then((response) => response.json())
       .then((data) => setJeux(data))
       .catch((error) => console.error(error));
@@ -32,8 +31,8 @@ const Accueil = () => {
   // ici on va afficher les jeux qui sont dans le panier
   useEffect(() => {
     if (selectedGame) {
-      // ici on fait une requete pour afficher les commentaires du jeu selectionné
-      fetch(`http://localhost:3002/jeux/${selectedGame.JeuxID}/commentaires`)
+      // ici on fait une requete pour afficher les Commentaire du jeu selectionné
+      fetch(`http://localhost:3002/jeux/${selectedGame.JeuxID}/Commentaire`)
         .then(response => {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -45,7 +44,7 @@ const Accueil = () => {
     }
   }, [selectedGame]);
        
-// ici on va afficher les jeux qui sont dans le panier
+// ici on a les 2 fonctions qui nous permettent d'afficher la fenetre en overlay et de la fermer
   const displayGameOverlay = (jeu) => {
     setSelectedGame(jeu);
   };
@@ -61,9 +60,8 @@ const Accueil = () => {
   const filteredGames = jeux.filter((jeu) =>
     jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
   );
-// ceci est la fonction qui va afficher les jeux qui sont dans le panier elle va 
+
   const displayFilteredGames = () => {
-    // ici on declare une variable qui va contenir les jeux qui sont dans le panier et qui va faaaire une boucle pour les afficher
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
       <div key={jeu.JeuxID} className="jeu-bulle" style={{ backgroundImage: `url(${jeu.lien_image})` }}>
@@ -80,6 +78,7 @@ const Accueil = () => {
     ));
   };
 
+  //handleNext et handlePrevious sert a naviguer pour voir tout nos jeux
   const handleNext = () => {
     if (startIndex + 6 < jeux.length) {
       setStartIndex(startIndex + 6);
@@ -92,6 +91,7 @@ const Accueil = () => {
     }
   };
 
+//handleStartDateChange et handleReturnDateChange sont la pour gérer les dates, pour récupérer les dates saisies a chaque changement de dates
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
@@ -100,33 +100,35 @@ const Accueil = () => {
     setReturnDate(event.target.value);
   };
 
+
+  //louerJeu servent a retourner les informations du jeux selectionné a etre louer dans la table locations de notre base de donnée
   const louerJeu = async () => {
     try {
       if (startDate && returnDate && selectedGame) {
         const userId = localStorage.getItem('UtilisateurID');
-// ici on fait une requete pour afficher les commentaires du jeu selectionné
+        // ici on fait une requete pour afficher les Commentaire du jeu selectionné
         if (userId) {
-          const locationData = {
-            jeuxID: selectedGame.JeuxID,
+          const locationsData = {
+            JeuxID: selectedGame.JeuxID,
             DateDebut: startDate,
             DateFin: returnDate,
             UtilisateurID: userId,
           };
 
-          console.log(locationData);
+          console.log(locationsData);
 
-          const response = await fetch('http://localhost:3002/location', {
+          const response = await fetch('http://localhost:3002/locations', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(locationData),
+            body: JSON.stringify(locationsData),
           });
 
           if (response.ok) {
             console.log('Jeu loué avec succès !');
           } else {
-            console.error('Erreur lors de la location du jeu.');
+            console.error('Erreur lors de la locations du jeu.');
           }
         } else {
           console.error("L'ID de l'utilisateur n'est pas disponible dans le localStorage.");
@@ -138,6 +140,9 @@ const Accueil = () => {
       console.error('Une erreur est survenue : ', error);
     }
   };
+
+
+  //ici c'est toutes la partie qu'on voit s'afficher lorsqu'on est sur la page accueil
   return (
     <div className="Body">
       <div className="header">
@@ -153,6 +158,8 @@ const Accueil = () => {
             onChange={handleSearchChange}
           />
         </div>
+
+        {/* ici on a mis 2 liens pour faciliter la navigation vers le panier, et pour la déconexion aussi */}
         <div className="top-right-link">
           <Link to="/Panier">
             <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
@@ -164,6 +171,8 @@ const Accueil = () => {
           </Link>
         </div>
       </div>
+
+      {/* la on affiche la liste des jeux, avec les bouton précédent et suivant et aussi un bouton pour afficher les information du jeu en overlay ou il y a aussi des boutons pour fermer la fenetre ou louer le jeu */}
       <div className="ListeDejeux">
         <h1>Liste des jeux</h1>
         <div className="jeux-container">{displayFilteredGames()}</div>
@@ -173,6 +182,7 @@ const Accueil = () => {
         </div>
       </div>
 
+      {/* ici on a tout le contenu de la fenetre afficher en overlay */}
       {selectedGame && (
         <div className="overlay" onClick={closeOverlay}>
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
@@ -180,7 +190,7 @@ const Accueil = () => {
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
-            <div className="commentaires">
+            <div className="Commentaire">
               {userComments.map((commentaire) => (
                 <div key={commentaire.CommentaireID}>
                   <p>commentaire :{commentaire.Commentaire}</p>
