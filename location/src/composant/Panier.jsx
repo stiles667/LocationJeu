@@ -5,10 +5,24 @@ import "./Panier.css";
 export default function Panier() {
   const [locations, setLocations] = useState([]);
   const [jeux, setJeux] = useState([]); // Added state for jeux
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [purchaseValidated, setPurchaseValidated] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+  };
+
+  const handlePurchaseValidation = () => {
+    const newTotalAmount = locations.reduce((total, location) => {
+      const dateDebut = new Date(location.DateDebut);
+      const dateFin = new Date(location.DateFin);
+      const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
+      return total + days * location.Prix;
+    }, 0);
+
+    setTotalAmount(newTotalAmount);
+    setPurchaseValidated(true);
   };
 
   useEffect(() => {
@@ -18,7 +32,6 @@ export default function Panier() {
         if (response.ok) {
           const data = await response.json();
           setLocations(data);
-          console.log(data);
         } else {
           throw new Error("Failed to fetch data");
         }
@@ -43,7 +56,6 @@ export default function Panier() {
 
     fetchLocations();
     fetchJeux(); // Fetch jeux data
-
   }, []);
 
   return (
@@ -85,28 +97,35 @@ export default function Panier() {
 
       <div className="locations-list">
         <h2>Locations</h2>
-        <ul>
-          {locations.map((location, index) => {
-            const jeu = jeux.find(j => j.JeuxID === location.JeuxID);
-            const dateDebut = new Date(location.DateDebut);
-            const dateFin = new Date(location.DateFin);
-            const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
-            const totalPrice = days * location.Prix;
+        {purchaseValidated ? (
+          <h1>Achat validé! Montant total: {totalAmount} $</h1>
+        ) : (
+          <ul>
+            {locations.map((location, index) => {
+              const jeu = jeux.find((j) => j.JeuxID === location.JeuxID);
+              const dateDebut = new Date(location.DateDebut);
+              const dateFin = new Date(location.DateFin);
+              const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
+              const totalPrice = days * location.Prix;
 
-            return (
-              <li  className ="carr "key={index} style={{backgroundImage: `url(${jeu && jeu.lien_image})`}}>
-              {jeu && (
-                <>
-                  <p>Nom du jeu: {location.Titre}</p>
-                  <p>Date de début: {dateDebut.toLocaleDateString()}</p>
-                  <p>Date de fin: {dateFin.toLocaleDateString()}</p>
-                  <p>Prix total: {totalPrice} $</p>
-                </>
-              )}
-            </li>
-            );
-          })}
-        </ul>
+              return (
+                <li key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
+                  {jeu && (
+                    <>
+                      <p>Nom du jeu: {location.Titre}</p>
+                      <p>Date de début: {dateDebut.toLocaleDateString()}</p>
+                      <p>Date de fin: {dateFin.toLocaleDateString()}</p>
+                      <p>Prix total: {totalPrice} $</p>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {!purchaseValidated && (
+          <button onClick={handlePurchaseValidation}>Valider les achats</button>
+        )}
       </div>
     </div>
   );
