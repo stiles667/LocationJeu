@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./Panier.css";
 
-export default function Panier() {
+const Panier = () => {
   const [locations, setLocations] = useState([]);
   const [jeux, setJeux] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,12 @@ export default function Panier() {
 
     setTotalAmount(newTotalAmount);
     setPurchaseValidated(true);
+
+    // await Promise.all(
+    //   locations.map(async (location) => {
+    //     await handleAddReview(location.LocationID, "Nouvel avis", 5);
+    //   })
+    // );
   };
 
   useEffect(() => {
@@ -72,16 +79,10 @@ export default function Panier() {
           <ul>
             {locations.map((location, index) => {
               const jeu = jeux.find((j) => j.JeuxID === location.JeuxID);
-
-              // Ajoutez ces consoles.log pour inspecter les données
-              console.log('location:', location);
-              console.log('jeu:', jeu);
-
-              // Assurez-vous que les noms des propriétés correspondent aux données réelles
               const dateDebut = new Date(location.DateDebut);
               const dateFin = new Date(location.DateFin);
               const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
-              const totalPrice = days * jeu.Prix;
+              const totalPrice = days * location.Prix;
 
               return (
                 <li className="carr" key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
@@ -90,7 +91,6 @@ export default function Panier() {
                       <p>Nom du jeu: {jeu.Titre}</p>
                       <p>Date de début: {dateDebut.toLocaleDateString()}</p>
                       <p>Date de fin: {dateFin.toLocaleDateString()}</p>
-                      <p>Prix du jeu: {jeu.Prix} $</p>
                       <p>Prix total: {totalPrice} $</p>
                     </>
                   )}
@@ -105,4 +105,7 @@ export default function Panier() {
       </div>
     </div>
   );
-}
+};
+
+export default Panier;
+  

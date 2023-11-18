@@ -1,6 +1,8 @@
+// Accueil.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Accueil.css';
+import './Accueil.css'; 
 
 const Accueil = () => {
   const [jeux, setJeux] = useState([]);
@@ -9,7 +11,7 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-
+  
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
@@ -36,7 +38,7 @@ const Accueil = () => {
   const displayFilteredGames = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
-      <div key={jeu.JeuxID} className="jeu-bulle" style={{ backgroundImage: `url(${jeu.lien_image})` }}>
+      <div key={jeu.JeuxID} className="jeu-bulle" style={{backgroundImage: `url(${jeu.lien_image})`}}>
         <h2>{jeu.Titre}</h2>
         <p>Note moyenne : {jeu.NoteMoyenne}</p>
         <p>Prix : {jeu.Prix} $</p>
@@ -61,7 +63,7 @@ const Accueil = () => {
       setStartIndex(startIndex - 6);
     }
   };
-
+  
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
@@ -74,7 +76,7 @@ const Accueil = () => {
     try {
       if (startDate && returnDate && selectedGame) {
         const userId = localStorage.getItem('UtilisateurID');
-
+        
         if (userId) {
           const locationData = {
             jeuxID: selectedGame.JeuxID,
@@ -82,7 +84,7 @@ const Accueil = () => {
             DateFin: returnDate,
             UtilisateurID: userId,
           };
-
+          
           console.log(locationData);
 
           const response = await fetch('http://localhost:3002/location', {
@@ -150,6 +152,7 @@ const Accueil = () => {
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
+           
             <input
               type="date"
               placeholder="Date de début"
