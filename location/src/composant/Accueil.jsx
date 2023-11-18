@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Accueil.css'; 
+import './Accueil.css';
 
 const Accueil = () => {
   const [jeux, setJeux] = useState([]);
@@ -9,7 +9,7 @@ const Accueil = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
-  
+
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
@@ -36,7 +36,7 @@ const Accueil = () => {
   const displayFilteredGames = () => {
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
-      <div key={jeu.JeuxID} className="jeu-bulle" style={{backgroundImage: `url(${jeu.lien_image})`}}>
+      <div key={jeu.JeuxID} className="jeu-bulle" style={{ backgroundImage: `url(${jeu.lien_image})` }}>
         <h2>{jeu.Titre}</h2>
         <p>Note moyenne : {jeu.NoteMoyenne}</p>
         <p>Prix : {jeu.Prix} $</p>
@@ -61,7 +61,7 @@ const Accueil = () => {
       setStartIndex(startIndex - 6);
     }
   };
-  
+
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
@@ -69,56 +69,46 @@ const Accueil = () => {
   const handleReturnDateChange = (event) => {
     setReturnDate(event.target.value);
   };
-  // ... (autre code existant)
 
-const louerJeu = async () => {
-  try {
-    // Vérifiez si les dates sont valides avant de les envoyer
-    if (startDate && returnDate && selectedGame) {
-      const userId = localStorage.getItem('UtilisateurID'); // Récupère l'ID de l'utilisateur depuis le localStorage
-      if (userId) {
-        const locationData = {
-          jeuxID: selectedGame.JeuxID,
-          DateDebut: startDate,
-          DateFin: returnDate,
-          UtilisateurID: userId, // Utilisez l'ID de l'utilisateur récupéré
-          // titre : selectedGame.titre,
-          
-        };
-        console.log(locationData);
+  const louerJeu = async () => {
+    try {
+      if (startDate && returnDate && selectedGame) {
+        const userId = localStorage.getItem('UtilisateurID');
 
-        const response = await fetch('http://localhost:3002/location', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(locationData),
-        });
+        if (userId) {
+          const locationData = {
+            jeuxID: selectedGame.JeuxID,
+            DateDebut: startDate,
+            DateFin: returnDate,
+            UtilisateurID: userId,
+          };
 
-        if (response.ok) {
-          
-          
-          console.log('Jeu loué avec succès !');
+          console.log(locationData);
+
+          const response = await fetch('http://localhost:3002/location', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(locationData),
+          });
+
+          if (response.ok) {
+            console.log('Jeu loué avec succès !');
+          } else {
+            console.error('Erreur lors de la location du jeu.');
+          }
         } else {
-        
-          console.error('Erreur lors de la location du jeu.');
+          console.error('L\'ID de l\'utilisateur n\'est pas disponible dans le localStorage.');
         }
       } else {
-        console.error('L\'ID de l\'utilisateur n\'est pas disponible dans le localStorage.');
+        console.error('Veuillez sélectionner un jeu et des dates valides.');
       }
-    } else {
-      console.error('Veuillez sélectionner un jeu et des dates valides.');
+    } catch (error) {
+      console.error('Une erreur est survenue : ', error);
     }
-  } catch (error) {
-    console.error('Une erreur est survenue : ', error);
-  }
-};
+  };
 
-
-
-  
-
-  
   return (
     <div className='Body'>
       <div className="header">
@@ -135,16 +125,13 @@ const louerJeu = async () => {
         </div>
         <div className="top-right-link">
           <Link to="/Panier">
-            
             <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
-            
           </Link>
         </div>
         <div className='Deconnexion'>
           <Link to="/">
             <img src="https://cdn-icons-png.flaticon.com/512/126/126486.png" alt="Logo Deconnexion" />
           </Link>
-
         </div>
       </div>
       <div className='ListeDejeux'>
@@ -163,7 +150,6 @@ const louerJeu = async () => {
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
-           
             <input
               type="date"
               placeholder="Date de début"
@@ -178,11 +164,9 @@ const louerJeu = async () => {
             />
             <button onClick={closeOverlay}><img src="https://cdn.icon-icons.com/icons2/894/PNG/512/Close_Icon_icon-icons.com_69144.png" alt="Fermer" /></button>
             <button onClick={louerJeu}><img src="https://cdn-icons-png.flaticon.com/512/57/57493.png" alt="louer" /></button>
-            
           </div>
         </div>
       )}
-
     </div>
   );
 };
