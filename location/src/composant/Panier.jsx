@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './panier.css';
+import './Panier.css';
 
 export default function Panier() {
   const [locations, setLocations] = useState([]);
