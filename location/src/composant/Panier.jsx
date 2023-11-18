@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Panier.css";
 
 export default function Panier() {
+// ici on a un tableau de jeux, et on veut afficher les jeux qui sont dans le panier  
   const [locations, setLocations] = useState([]);
   const [jeux, setJeux] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,19 +14,20 @@ export default function Panier() {
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
+//  ici c est la fonction qui va valider les achats
   const handlePurchaseValidation = async () => {
     const newTotalAmount = locations.reduce((total, location) => {
       const dateDebut = new Date(location.DateDebut);
       const dateFin = new Date(location.DateFin);
+      // on calcule le nombre de jours entre la date de debut et la date de fin
       const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
       return total + days * location.Prix;
     }, 0);
-
+    // ici  on a le montant total de la commande
     setTotalAmount(newTotalAmount);
     setPurchaseValidated(true);
   };
-
+// ici on a la fonction qui va afficher les jeux qui sont dans le panier
   useEffect(() => {
     const fetchLocations = async () => {
       try {
@@ -40,7 +42,7 @@ export default function Panier() {
         console.error("Error fetching data:", error);
       }
     };
-
+// ici on a la fonction qui va afficher les jeux qui sont dans le panier
     const fetchJeux = async () => {
       try {
         const response = await fetch("http://localhost:3002/jeux");
@@ -54,7 +56,7 @@ export default function Panier() {
         console.error("Error fetching jeux data:", error);
       }
     };
-
+// ici on a la fonction qui va afficher les jeux qui sont dans le panier
     fetchLocations();
     fetchJeux();
   }, [UtilisateurID]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Accueil.css';
-
+// ici aussi on a un tableau de jeux, et on veut afficher les jeux qui sont dans le panier
 const Accueil = () => {
   const [jeux, setJeux] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
@@ -11,17 +11,17 @@ const Accueil = () => {
   const [returnDate, setReturnDate] = useState(null);
   const [selectedGameDetails, setSelectedGameDetails] = useState(null);
   const [userComments, setUserComments] = useState([]);
-  const selectedGameId = 'Jeuxid';  // Cela semble inutilisé, vous pouvez le supprimer si nécessaire
-
+  const selectedGameId = 'Jeuxid';  
+// ici on a la fonction qui va afficher les jeux qui sont dans le panier
   useEffect(() => {
     const UtilisateurID = localStorage.getItem('UtilisateurID');
-
+//ici on fait une requete pour afficher les commentaires
     fetch(`http://localhost:3002/Commentaire/Users/${UtilisateurID}`)
       .then(response => response.json())
       .then(data => setUserComments(data))
       .catch(error => console.error('Error:', error));
   }, []);
-
+// ici on va afficher les jeux qui sont dans le panier
   useEffect(() => {
     fetch('http://localhost:3002/jeux')
       .then((response) => response.json())
@@ -29,9 +29,10 @@ const Accueil = () => {
       .catch((error) => console.error(error));
   }, []);
 
-  
+  // ici on va afficher les jeux qui sont dans le panier
   useEffect(() => {
     if (selectedGame) {
+      // ici on fait une requete pour afficher les commentaires du jeu selectionné
       fetch(`http://localhost:3002/jeux/${selectedGame.JeuxID}/commentaires`)
         .then(response => {
           if (!response.ok) {
@@ -44,7 +45,7 @@ const Accueil = () => {
     }
   }, [selectedGame]);
        
-
+// ici on va afficher les jeux qui sont dans le panier
   const displayGameOverlay = (jeu) => {
     setSelectedGame(jeu);
   };
@@ -60,8 +61,9 @@ const Accueil = () => {
   const filteredGames = jeux.filter((jeu) =>
     jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+// ceci est la fonction qui va afficher les jeux qui sont dans le panier elle va 
   const displayFilteredGames = () => {
+    // ici on declare une variable qui va contenir les jeux qui sont dans le panier et qui va faaaire une boucle pour les afficher
     const displayedGames = filteredGames.slice(startIndex, startIndex + 6);
     return displayedGames.map((jeu) => (
       <div key={jeu.JeuxID} className="jeu-bulle" style={{ backgroundImage: `url(${jeu.lien_image})` }}>
@@ -102,7 +104,7 @@ const Accueil = () => {
     try {
       if (startDate && returnDate && selectedGame) {
         const userId = localStorage.getItem('UtilisateurID');
-
+// ici on fait une requete pour afficher les commentaires du jeu selectionné
         if (userId) {
           const locationData = {
             jeuxID: selectedGame.JeuxID,
@@ -183,7 +185,7 @@ const Accueil = () => {
               {userComments.map((commentaire) => (
                 <div key={commentaire.CommentaireID}>
                   <p>commentaire :{commentaire.Commentaire}</p>
-                  
+
                 </div>
               ))}
             </div>
