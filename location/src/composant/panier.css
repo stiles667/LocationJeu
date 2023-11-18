@@ -1,25 +1,28 @@
-h1 {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  /* Centrer la barre de recherche au-dessus des Pokémon */
-  .nav-bar {
-    text-align: center;
-    margin: 20px 0;
-  }
-  
-  /* Définir une largeur maximale pour la barre de navigation */
-  .nav-bar input[type="text"] {
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
+
+*{
+  font-family: 'Bebas Neue', sans-serif;
+}
+
+h1{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 50px;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+/* Styles pour la barre de navigation */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     max-width: 400px; /* Par exemple, ajustez la largeur maximale selon vos préférences */
     margin: 0 auto;
     padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
+    background-color: transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 999;
   }
   
   .Panier {
@@ -33,42 +36,61 @@ h1 {
     width: 200px;
     margin: 10px;
     padding: 10px;
-    text-align: center;
-    background-color: #f0f0f0;
+    display: flex;
+    flex-wrap: wrap; /* Permet aux éléments de se retourner à la ligne */
+    justify-content: space-between; /* Les éléments sont répartis avec un espacement égal entre eux */
+    align-items: stretch; /* Les éléments prennent toute la hauteur */
+    position: sticky;
+    top: 50px;
+    z-index: 998;
+    background-color: #d8e9e3;
+  }
+  
+  .locations-list ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%; /* Ajuste la largeur de la liste */
+  }
+  
+  .locations-list li {
+    width: calc(33.33% - 20px); /* Trois éléments par ligne */
     border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Autres styles pour chaque élément */
   }
-  
-  .Panier-card p {
-    font-size: 18px;
-    margin: 10px 0;
-  }
-  
-  .Panier-card img {
-    max-width: 100px;
-    max-height: 100px;
-    margin: 0 auto;
-    display: block;
-  }
-  
-  /* button {
-    background-color: #ff0000;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+  .carr {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
     cursor: pointer;
-  } */
-  
-  /* button:hover {
-    background-color: #cc0000;
-  } */
-  
-  .remove-all-button {
-    margin: 20px auto;
-    width: 300px;
-    height: 50px;
-    display: block;
-    font-size: 18px;
+    transition: all 0.3s ease-in-out;
+    width: calc(33.33% - 20px); /* Trois éléments par ligne avec une marge entre eux */
+    margin-right: 20px; /* Ajoutez une marge à droite pour l'espacement entre les éléments */
   }
   
+  .carr:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    color: rgb(255, 255, 255);
+  }
+  .title {
+    color: #d8e9e3;
+
+  }
+  .title:hover{
+
+    color: aqua;
+    
+    
+  }

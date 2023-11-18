@@ -32,10 +32,7 @@ body {
     transform: scale(1.05);
   }
   
-  h2 {
-    color: #262626;
-    font-family: 'Billabong', sans-serif;
-  }
+ 
   
   label {
     display: block;

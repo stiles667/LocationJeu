@@ -44,7 +44,7 @@ INSERT INTO `jeux` VALUES
 (2,'Cyberpunk 2077','Plongez dans un futur dystopique avec des choix impactants.',4.20,49.99,'https://image.jeuxvideo.com/medias-sm/163835/1638354762-4961-jaquette-avant.gif'),
 (3,'FIFA 23','Dominez le terrain avec les dernières équipes et joueurs.',4.60,54.99,'https://m.media-amazon.com/images/I/71k5N7rxjCL.__AC_SX300_SY300_QL70_ML2_.jpg'),
 (4,'Assassin\'s Creed Valhalla','Explorez l\'âge des Vikings dans cette aventure épique.',4.85,59.99,NULL),
-(5,'Gta 6','Plongez dans un futur dystopique avec des choix impactants.',4.20,49.99,NULL),
+(5,'Gta 6','Plongez dans un futur dystopique avec des choix impactants.',4.20,49.99,'https://cdn-uploads.gameblog.fr/img/news/429822_64a51c2256401.jpg'),
 (6,'The Witcher 3: Wild Hunt','Vivez l\'épopée du sorceleur Geralt dans ce monde ouvert.',4.90,39.99,NULL),
 (7,'FIFA 22','Dominez le terrain avec les dernières équipes et joueurs.',4.60,54.99,NULL),
 (8,'Minecraft','Construisez et explorez des mondes infinis dans ce jeu culte.',4.80,29.99,NULL),
@@ -106,7 +106,7 @@ CREATE TABLE `location` (
   KEY `JeuxID` (`JeuxID`),
   CONSTRAINT `location_ibfk_1` FOREIGN KEY (`UtilisateurID`) REFERENCES `users` (`UtilisateurID`),
   CONSTRAINT `location_ibfk_2` FOREIGN KEY (`JeuxID`) REFERENCES `jeux` (`JeuxID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,8 +116,21 @@ CREATE TABLE `location` (
 LOCK TABLES `location` WRITE;
 /*!40000 ALTER TABLE `location` DISABLE KEYS */;
 INSERT INTO `location` VALUES
-(1,12,5,'2222-02-01','9000-11-01',NULL,NULL),
-(2,12,5,'2222-02-01','9000-11-01',NULL,NULL);
+(1,12,5,'2222-02-01','9000-11-01','Nouvel avis',5),
+(2,12,5,'2222-02-01','9000-11-01','Nouvel avis',5),
+(3,12,43,'2222-02-22','3000-01-04','Nouvel avis',5),
+(4,12,4,'2222-02-22','5555-05-05','Nouvel avis',5),
+(5,12,4,'2222-02-22','5555-05-05','Nouvel avis',5),
+(6,12,17,'0322-02-04','2222-03-31','Nouvel avis',5),
+(7,12,17,'0322-02-04','2222-03-31','Nouvel avis',5),
+(8,12,41,'2023-11-17','2025-02-13','Nouvel avis',5),
+(9,12,6,'1111-11-11','3222-03-31','Nouvel avis',5),
+(10,12,6,'1111-11-11','3222-03-31','Nouvel avis',5),
+(11,18,1,'2023-11-18','2023-11-19','Nouvel avis',5),
+(12,18,1,'2023-11-18','2023-11-19','Nouvel avis',5),
+(13,18,3,'2023-11-18','2023-12-03','Nouvel avis',5),
+(14,12,1,'2023-11-18','2023-12-10','Nouvel avis',5),
+(15,12,2,'2023-11-18','2023-12-09','Nouvel avis',5);
 /*!40000 ALTER TABLE `location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +148,7 @@ CREATE TABLE `users` (
   `Email` varchar(100) DEFAULT NULL,
   `MotDePasse` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`UtilisateurID`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,3 +158,34 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` VALUES
+(1,'elyamani','ilyass','ilyassel870@gmail.com','ilyass'),
+(2,'elyamani','ilyass','ilyass@ipsi.com','ilyass'),
+(3,'elyamani','ilyass','ilyassel870@gmail.comrgre','regerg'),
+(4,'elyamani','ilyass','ilyassel870@gmail.comdd','sssss'),
+(5,'elyamani','ilyass','ilyassel870@gmail.comdd','$2b$10$6dB0xsuwaW5rkCZlYHeb9uK7akAHTqhORGvG39JJfKrHCltVRE.CG'),
+(6,'ds','ds','ilyassel870dsdd@gmail.com','$2b$10$EHS0soO56fNwVHstX661puvvS2nfnrz9agw.0RGtqLTix0k95L5Su'),
+(7,'elyamani','ilyass','ilyassel870@gmail.comvvv','$2b$10$J.kiqFrhvE/vq756kl2k8.w2y5mrZiZVEPd1fQ6N0Nw2eNUuio59m'),
+(8,'elyamani','ilyass','ilyasselff870@gmail.com','$2b$10$piF8Lba878ZTD3OvstOKVuP21285kk7ZHeO86rUxz7FR.P61gJJLe'),
+(9,'elyamani','ilyass','ilyassel870@gmail.ss','$2b$10$3phtijYui0..U5DkOWEYruxaGB0fhmCSUdH7Wfkm9j99pibMU5/WW'),
+(10,'elyamani','ilyass','ilyassel870@gmail.pp','$2b$10$mwD2oRDCTWZpOmS382tqvOHXzJpWc1M8PGVlyP4BNeZvrw173wH4W'),
+(11,'elyamani','ilyass','ilyassel@gmail.com','$2b$10$PmcgELQDcSOBJcFPJjqZ8uqzVt6oh4lUM0Q.dUbeFDFELlT0ktZy.'),
+(12,'elyamani','ilyass','ilyassel870@gmail.fr','$2b$10$smF/5LR9JwtCEPMjpPVGUOObF34G/AK3iEhrXYgfdvbQ41RU5gQde'),
+(13,'elyamani','ilyass','870@gmail.com','$2b$10$nLkLnMcXSBeu5WasIUc2p./z52lRVN81.nzp9h72SbxAqxjUr6zG6'),
+(14,'elyamani','ilyass','ilyassel870@gmail.comp','$2b$10$.rESWGkNVaH/Vh1tXjvRSezwSRD4T2R/xzS3cE3XUBHJ0JfsCpLKG'),
+(15,'elyamani','ilyass','ilyassel870@gmail.comsss','$2b$10$eIeI6YRkwa6tbp2Bx5e5v.lHLuA8voML4qvOTwMIc7e8PjCkGX.Py'),
+(16,'elyamani','ilyass','ilyassel870@gmail.comssskj','$2b$10$GpSFZJfKmCLLEj.7kqSaKeR60IugEhCm/eCAPj0N1Tn606mDUkoZK'),
+(17,'elyamani','ilyass','ilyassel870@gmail.comdda','$2b$10$TJSFOMQZPtqSji9Ru2W.sO47DUfQDZ.kxf2G/QdFPZWoa4CbZartC'),
+(18,'elyamani','ilyass','i@gmail.com','$2b$10$z/UM3K1nom6biEFRr/rZz.lI7PTq7K3/.BSKVQXJv7wf6GM.VK4U.');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2023-11-18 16:32:29

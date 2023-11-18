@@ -1,10 +1,13 @@
 /* Styles pour la barre de navigation */
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
-* {
-  box-sizing: border-box;
-  font-family: 'Bebas Neue', sans-serif;
-}
 
+*{
+  font-family: 'Bebas Neue', sans-serif;
+/* background-image: url("https://www.pixground.com/wp-content/uploads/2023/06/Playstation-Buttons-Background-4K-Wallpaper-1024x576.webp"); */
+}
+  Body{
+    background-color: #d8e9e3;
+  }
 .header {
   position: fixed;
   top: 0;
@@ -14,7 +17,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: transparent   ;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 999;
 }
@@ -56,6 +59,12 @@
 
   
 }
+.name{
+  /* put the name at the middle of the header */
+  font-size: 30px;
+
+
+}
 
 /* Styles pour la liste des jeux */
 .ListeDejeux {
@@ -67,7 +76,9 @@
   position: sticky;
   top: 50px;
   z-index: 998;
-  background-color: #ffffff;
+  background-color: rgb(216,233,227);
+  box-shadow: #d8e9e3;
+  
 }
 
 .jeux-container {
@@ -85,7 +96,7 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-.jeu-bulle h2 {
+.jeu-bulle {
   font-size: 18px; /* Redéfinition de la taille de police pour les titres des jeux */
   margin-bottom: 8px; /* Ajustement de l'espacement sous les titres */
 }
@@ -96,8 +107,8 @@
   justify-content: center;
   gap: 10px;
   margin-top: 10px;
-
-
+  gap: 10px;
+  
 }
 
 .pagination-buttons button {
@@ -179,4 +190,30 @@
   height: 40px; /* Ajuste la taille de l'image selon tes besoins */
   border-radius: 50%;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+.jeu-bulle{
+  color: #ffffff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #000000;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  
+}
+.jeu-bulle:hover{
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  color: rgb(255, 255, 255);
+}
+h2{
+  font-size: 20px;
+  margin-bottom: 10px;
+/* mzke the ccolor glow so we can see it  */
+  /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); */
+  
 }
