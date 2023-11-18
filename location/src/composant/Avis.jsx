@@ -1,57 +1,44 @@
 import React, { useState, useEffect } from 'react';
 
 export default function Avis() {
-    const [cartGames, setCartGames] = useState([]);
-    const [comment, setComment] = useState('');
-    const [rating, setRating] = useState(1);
+    const [gamesWithReviews, setGamesWithReviews] = useState([]);
 
     useEffect(() => {
-        // Fetch cart games from your API and set the cartGames state variable
+        // Fetch games with reviews from your API and set the gamesWithReviews state variable
+        fetchGamesWithReviews();
     }, []);
 
-    const handleCommentChange = (event) => {
-        setComment(event.target.value);
+    const fetchGamesWithReviews = async () => {
+        try {
+            const response = await fetch('http://localhost:3002/jeux-avis'); // Endpoint à ajuster
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data); // Vérifiez les données renvoyées par le serveur
+                setGamesWithReviews(data);
+            } else {
+                throw new Error('Failed to fetch games with reviews');
+            }
+        } catch (error) {
+            console.error('Error fetching games with reviews:', error);
+        }
     };
-
-    const handleRatingChange = (event) => {
-        setRating(event.target.value);
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        // Send a POST request to your API to save the review
-    };
-
+    
     return (
         <div>
-            <h2>Cart Games</h2>
-            {cartGames.map((jeux, index) => (
-                <p key={index}>{jeux.titre}</p> // Replace "game.name" with how you access the game's name
+            <h2>Jeux with Reviews</h2>
+            {gamesWithReviews.map((game) => (
+                <div key={game.JeuxID}>
+                    <h3>{game.Titre}</h3>
+                    <ul>
+                        {game.Commentaire && game.Note && (
+                            <li>
+                                <p>Comment: {game.Commentaire}</p>
+                                <p>Rating: {game.Note}</p>
+                            </li>
+                        )}
+                    </ul>
+                </div>
             ))}
-
-            <h2>Leave a review</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Comment:
-                    <textarea
-                        value={comment}
-                        onChange={handleCommentChange}
-                        rows={4}
-                    />
-                </label>
-                <label>
-                    Rating:
-                    <input
-                        type="number"
-                        value={rating}
-                        onChange={handleRatingChange}
-                        min={1}
-                        max={5}
-                    />
-                </label>
-                <button type="submit">Submit</button>
-            </form>
         </div>
     );
 }

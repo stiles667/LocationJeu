@@ -186,25 +186,7 @@ app.get('/location', async (req, res) => {
   }
 });
 
-app.post("/reviews", async (req, res) => {
-  let conn;
-  const { LocationID, Commentaire, Note } = req.body;
 
-  try {
-    conn = await pool.getConnection();
-
-    // Mettez à jour la ligne de la location avec le commentaire et la note
-    const query = "UPDATE location SET Commentaire = ?, Note = ? WHERE LocationID = ?";
-    await conn.query(query, [Commentaire, Note, LocationID]);
-
-    res.status(200).json({ message: 'Avis ajouté avec succès' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    if (conn) conn.release();
-  }
-});
 app.get('/location/users/:UtilisateurID', async (req, res) => {
   let conn;
   try {
@@ -231,6 +213,74 @@ app.get('/location/users/:UtilisateurID', async (req, res) => {
     }
   }
 });
+app.post("/avis", async (req, res) => {
+  let conn;
+  const { UtilisateurID, JeuxID, Commentaire, Note } = req.body;
+
+  try {
+    conn = await pool.getConnection();
+    const query = "INSERT INTO avis (UtilisateurID, JeuxID, Commentaire, Note) VALUES (?, ?, ?, ?)";
+    const result = await conn.query(query, [UtilisateurID, JeuxID, Commentaire, Note]);
+    res.status(201).json({ id: result.insertId, UtilisateurID, JeuxID, Commentaire, Note });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+app.get("/avis", async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT * FROM avis");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+
+app.get("/commentaire", async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT * FROM Commentaire");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+
+
+app.post("/Commentaire", async (req, res) => {
+  let conn;
+  const { UtilisateurID, JeuxID, Commentaire, Note } = req.body;
+
+  try {
+    conn = await pool.getConnection();
+    const query = "INSERT INTO avis (UtilisateurID, JeuxID, Commentaire, Note) VALUES (?, ?, ?, ?)";
+    const result = await conn.query(query, [UtilisateurID, JeuxID, Commentaire, Note]);
+    res.status(201).json({ id: result.insertId, UtilisateurID, JeuxID, Commentaire, Note });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+
+
+
+
 
 
 app.listen(3002, () => {

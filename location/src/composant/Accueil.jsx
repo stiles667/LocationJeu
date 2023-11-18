@@ -117,6 +117,7 @@ const Accueil = () => {
         <div className="logo">
           <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
         </div>
+        <h1 className='name'>GAMING HUB</h1>
         <div className="search-bar">
           <input
             type="text"
@@ -132,7 +133,7 @@ const Accueil = () => {
         </div>
         <div className='Deconnexion'>
           <Link to="/">
-            <img src="https://cdn-icons-png.flaticon.com/512/126/126486.png" alt="Logo Deconnexion" />
+            <img src="https://cdn-icons-png.flaticon.com/512/4400/4400629.png" alt="Logo Deconnexion" />
           </Link>
         </div>
       </div>
@@ -146,9 +147,9 @@ const Accueil = () => {
       </div>
 
       {selectedGame && (
-        <div className="overlay" onClick={closeOverlay}>
+        <div className="overlay" onClick={closeOverlay}>  
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-            <h2>{selectedGame.Titre}</h2>
+            <h1>{selectedGame.Titre}</h1>
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>

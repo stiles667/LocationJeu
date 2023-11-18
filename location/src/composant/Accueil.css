@@ -5,7 +5,9 @@
   font-family: 'Bebas Neue', sans-serif;
 /* background-image: url("https://www.pixground.com/wp-content/uploads/2023/06/Playstation-Buttons-Background-4K-Wallpaper-1024x576.webp"); */
 }
-  
+  Body{
+    background-color: #d8e9e3;
+  }
 .header {
   position: fixed;
   top: 0;
@@ -55,6 +57,12 @@
 
   
 }
+.name{
+  /* put the name at the middle of the header */
+  font-size: 30px;
+
+
+}
 
 /* Styles pour la liste des jeux */
 .ListeDejeux {
@@ -66,7 +74,9 @@
   position: sticky;
   top: 50px;
   z-index: 998;
-  background-color: #ffffff;
+  background-color: rgb(216,233,227);
+  box-shadow: #d8e9e3;
+  
 }
 
 .jeux-container {
