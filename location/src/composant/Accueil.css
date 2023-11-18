@@ -1,4 +1,11 @@
 /* Styles pour la barre de navigation */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
+
+*{
+  font-family: 'Bebas Neue', sans-serif;
+/* background-image: url("https://www.pixground.com/wp-content/uploads/2023/06/Playstation-Buttons-Background-4K-Wallpaper-1024x576.webp"); */
+}
+  
 .header {
   position: fixed;
   top: 0;
@@ -77,7 +84,7 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-.jeu-bulle h2 {
+.jeu-bulle {
   font-size: 18px; /* Redéfinition de la taille de police pour les titres des jeux */
   margin-bottom: 8px; /* Ajustement de l'espacement sous les titres */
 }
@@ -185,4 +192,12 @@
 .jeu-bulle:hover{
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  color: rgb(255, 255, 255);
+}
+h2{
+  font-size: 20px;
+  margin-bottom: 10px;
+/* mzke the ccolor glow so we can see it  */
+  /* text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); */
+  
 }

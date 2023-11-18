@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@1,700&display=swap');
+
+*{
+  font-family: 'Bebas Neue', sans-serif;
+}
+
 /* Styles pour la barre de navigation */
 .header {
     position: fixed;
@@ -81,4 +87,22 @@
     box-sizing: border-box;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     /* Autres styles pour chaque élément */
+  }
+  .carr{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    
+  }
+  .carr:hover{
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
   }
