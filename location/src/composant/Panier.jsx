@@ -8,6 +8,7 @@ export default function Panier() {
   const [searchTerm, setSearchTerm] = useState("");
   const [purchaseValidated, setPurchaseValidated] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const UtilisateurID = localStorage.getItem('UtilisateurID');
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -15,54 +16,29 @@ export default function Panier() {
 
   const handlePurchaseValidation = async () => {
     const newTotalAmount = locations.reduce((total, location) => {
-      const dateDebut = new Date(location.DateDebut);
-      const dateFin = new Date(location.DateFin);
+      const dateDebut = new Date(location.dateDebut);
+      const dateFin = new Date(location.dateFin);
       const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
-      return total + days * location.Prix;
+      return total + days * location.Prix; 
     }, 0);
 
     setTotalAmount(newTotalAmount);
     setPurchaseValidated(true);
 
-    // Ajouter des avis après la validation des achats
-    await Promise.all(
-      locations.map(async (location) => {
-        await handleAddReview(location.LocationID, "Nouvel avis", 5);
-      })
-    );
-  };
-
-  const handleAddReview = async (locationId, commentaire, note) => {
-    try {
-      const response = await fetch("http://localhost:3002/reviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          LocationID: locationId,
-          Commentaire: commentaire,
-          Note: note,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error adding review");
-      }
-
-      const data = await response.json();
-      console.log(data); // Afficher la réponse du serveur (peut être utile pour le débogage)
-    } catch (error) {
-      console.error("Error adding review:", error);
-    }
+    // await Promise.all(
+    //   locations.map(async (location) => {
+    //     await handleAddReview(location.LocationID, "Nouvel avis", 5);
+    //   })
+    // );
   };
 
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await fetch("http://localhost:3002/locations");
+        const response = await fetch(`http://localhost:3002/location/users/${UtilisateurID}`);
         if (response.ok) {
           const data = await response.json();
+          console.log('Data from server:', data); // Ajoutez cette ligne pour voir les données reçues
           setLocations(data);
         } else {
           throw new Error("Failed to fetch data");
@@ -71,7 +47,7 @@ export default function Panier() {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     const fetchJeux = async () => {
       try {
         const response = await fetch("http://localhost:3002/jeux");
@@ -85,48 +61,16 @@ export default function Panier() {
         console.error("Error fetching jeux data:", error);
       }
     };
-
+  
     fetchLocations();
     fetchJeux();
-  }, []);
+  }, [UtilisateurID]);
 
   return (
     <div className="Body">
       <div className="header">
-        <div className="logo">
-          <Link to="/Accueil">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/2948/2948025.png"
-              alt="Logo Accueil"
-            />
-          </Link>
-        </div>
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Rechercher un jeu"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
-        <div className="top-right-link">
-          <Link to="/panier">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/126/126083.png"
-              alt="Logo Panier"
-            />
-          </Link>
-        </div>
-        <div className="Deconnexion">
-          <Link to="/">
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/126/126486.png"
-              alt="Logo Deconnexion"
-            />
-          </Link>
-        </div>
+        {/* ... (rest of the header code) */}
       </div>
-
       <div className="locations-list">
         <h2>Locations</h2>
         {purchaseValidated ? (
@@ -135,8 +79,8 @@ export default function Panier() {
           <ul>
             {locations.map((location, index) => {
               const jeu = jeux.find((j) => j.JeuxID === location.JeuxID);
-              const dateDebut = new Date(location.DateDebut);
-              const dateFin = new Date(location.DateFin);
+              const dateDebut = new Date(location.dateDebut);
+              const dateFin = new Date(location.dateFin);
               const days = Math.ceil((dateFin - dateDebut) / (1000 * 60 * 60 * 24));
               const totalPrice = days * location.Prix;
 
@@ -144,7 +88,7 @@ export default function Panier() {
                 <li className="carr" key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
                   {jeu && (
                     <>
-                      <p>Nom du jeu: {location.Titre}</p>
+                      <p>Nom du jeu: {jeu.Titre}</p>
                       <p>Date de début: {dateDebut.toLocaleDateString()}</p>
                       <p>Date de fin: {dateFin.toLocaleDateString()}</p>
                       <p>Prix total: {totalPrice} $</p>

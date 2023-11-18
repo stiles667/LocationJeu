@@ -76,7 +76,6 @@ const louerJeu = async () => {
     // Vérifiez si les dates sont valides avant de les envoyer
     if (startDate && returnDate && selectedGame) {
       const userId = localStorage.getItem('UtilisateurID'); // Récupère l'ID de l'utilisateur depuis le localStorage
-      console.log(localStorage);
       if (userId) {
         const locationData = {
           jeuxID: selectedGame.JeuxID,

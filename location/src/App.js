@@ -4,6 +4,8 @@ import Inscr from "./composant/Inscription";
 import Connexion from "./composant/Connexion";
 import Accueil from "./composant/Accueil";
 import Panier from "./composant/Panier";
+import Avis from "./composant/Avis";
+
 function App() {
   return (
     <div className="App">
@@ -12,6 +14,7 @@ function App() {
         <Route path="/" element={<Connexion />} />
         <Route path="/Accueil" element={<Accueil />} />
         <Route path="/Panier" element={<Panier />} />
+        <Route path="/Avis" element={<Avis />} />
       </Routes>
     </div>
   );

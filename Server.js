@@ -172,7 +172,7 @@ app.post('/location',async (req, res) => {
   });
 });
 
-app.get('/locations', async (req, res) => {
+app.get('/location', async (req, res) => {
   let conn;
   try {
     conn = await pool.getConnection();
@@ -185,6 +185,7 @@ app.get('/locations', async (req, res) => {
     if (conn) conn.release();
   }
 });
+
 app.post("/reviews", async (req, res) => {
   let conn;
   const { LocationID, Commentaire, Note } = req.body;
@@ -204,8 +205,34 @@ app.post("/reviews", async (req, res) => {
     if (conn) conn.release();
   }
 });
+app.get('/location/users/:UtilisateurID', async (req, res) => {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const UtilisateurID = req.params.UtilisateurID;
+
+    const rows = await conn.query(`
+      SELECT location.*, jeux.Titre, jeux.Prix
+      FROM location
+      JOIN jeux ON location.JeuxID = jeux.JeuxID
+      WHERE location.UtilisateurID = ?
+    `, [UtilisateurID]);
+
+    console.log('Rows:', rows); // Ajoutez cette ligne pour voir les données renvoyées
+
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error("Erreur lors de la récupération des locations :", err);
+    res.status(500).send("Erreur interne du serveur");
+    console.log(Prix);
+  } finally {
+    if (conn) {
+      conn.release();
+    }
+  }
+});
+
 
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);
 });
-
