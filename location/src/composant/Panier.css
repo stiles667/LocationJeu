@@ -1,84 +1,74 @@
-/* Styles pour la barre de navigation */
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  /* Centrer la barre de recherche au-dessus des Pokémon */
+  .nav-bar {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  /* Définir une largeur maximale pour la barre de navigation */
+  .nav-bar input[type="text"] {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    max-width: 400px; /* Par exemple, ajustez la largeur maximale selon vos préférences */
+    margin: 0 auto;
     padding: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 999;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
   }
   
-  .search-bar {
+  .Panier {
     display: flex;
-    margin-left: 65%;
-    margin-top: 2%;
-  }
-  
-  .Deconnexion {
-    margin-left: 10px; /* Marge à gauche pour l'espacement */
-  }
-  
-  .Deconnexion img {
-    width: 40px;
-    margin-right: 50px;
-  }
-  
-  .logo img {
-    width: 80px;
-  }
-  
-  .top-right-link {
-    display: flex;
-    align-items: center;
-  }
-  
-  .top-right-link img {
-    width: 40px;
-    margin-right: 2px;
-  }
-  
-  .Body {
-    margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
     justify-content: center;
   }
   
-  .locations-list {
-    max-width: 1200px;
-    margin: 70px auto 20px;
+  /* Style des cartes de Pokemon dans le Panier */
+  .Panier-card {
+    width: 200px;
+    margin: 10px;
     padding: 10px;
-    display: flex;
-    flex-wrap: wrap; /* Permet aux éléments de se retourner à la ligne */
-    justify-content: space-between; /* Les éléments sont répartis avec un espacement égal entre eux */
-    align-items: stretch; /* Les éléments prennent toute la hauteur */
-    position: sticky;
-    top: 50px;
-    z-index: 998;
-    background-color: #ffffff;
-  }
-  
-  .locations-list ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%; /* Ajuste la largeur de la liste */
-  }
-  
-  .locations-list li {
-    width: calc(33.33% - 20px); /* Trois éléments par ligne */
+    text-align: center;
+    background-color: #f0f0f0;
     border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Autres styles pour chaque élément */
+    border-radius: 5px;
   }
+  
+  .Panier-card p {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+  
+  .Panier-card img {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  /* button {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  } */
+  
+  /* button:hover {
+    background-color: #cc0000;
+  } */
+  
+  .remove-all-button {
+    margin: 20px auto;
+    width: 300px;
+    height: 50px;
+    display: block;
+    font-size: 18px;
+  }
+  
