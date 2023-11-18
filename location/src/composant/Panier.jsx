@@ -62,7 +62,24 @@ export default function Panier() {
   return (
     <div className="Body">
       <div className="header">
-        {/* ... (rest of the header code) */}
+        <h1>GAMING HUB</h1>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Rechercher un jeu"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+
+        <div className="logo">
+          <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
+          </div>
+
+
+
+
+      
       </div>
       <div className="locations-list">
         <h2>Locations</h2>
