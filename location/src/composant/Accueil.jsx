@@ -82,10 +82,12 @@ const Accueil = () => {
           jeuxID: selectedGame.JeuxID,
           DateDebut: startDate,
           DateFin: returnDate,
-          UtilisateurID: parseInt(userId), // Convertit l'ID en nombre
+          UtilisateurID: userId, // Utilisez l'ID de l'utilisateur récupéré
+          // titre : selectedGame.titre,
+          
         };
 
-        const response = await fetch('http://localhost:3002/location', {
+        const response = await fetch('http://localhost:3002/locations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ const Accueil = () => {
     <div className='Body'>
       <div className="header">
         <div className="logo">
-          <img src="https://pbs.twimg.com/profile_images/1641935230251532297/CaKypRr__400x400.jpg" alt="Logo Manette" />
+          <img src="https://cdn-icons-png.flaticon.com/512/2618/2618988.png" alt="Logo Manette" />
         </div>
         <div className="search-bar">
           <input

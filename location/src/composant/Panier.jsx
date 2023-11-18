@@ -1,112 +1,87 @@
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import './panier.css'; 
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./Panier.css";
+
 export default function Panier() {
-    const [panier, setPanier] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    useEffect(() => {
-        const userId = localStorage.getItem('UtilisateurID');
-    
-        if (userId && !isNaN(userId)) {
-          fetch(`http://localhost:3002/locations/${userId}/jeux`)
-            .then((response) => response.json())
-            .then((data) => {
-              console.log('Data from server:', data);
-              setPanier(data);
-            })
-            .catch((error) => console.error(error));
+  const [locations, setLocations] = useState([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch("http://localhost:3002/locations");
+        if (response.ok) {
+          const data = await response.json();
+          setLocations(data);
+          console.log(data);
         } else {
-          console.error("L'ID de l'utilisateur n'est pas disponible ou n'est pas valide.");
+          throw new Error("Failed to fetch data");
         }
-      }, []);
-    
-      
-    
-      
-      
-
-    const removeFromPanier = (jeuId) => {
-        console.log('Removing jeu with ID:', jeuId);
-        fetch(`http://localhost:3002/api/panier/${jeuId}`, {
-        method: 'DELETE',
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log('Response after removal:', data);
-            setPanier((prevPanier) => prevPanier.filter((jeu) => jeu.JeuxID !== jeuId));
-        })
-        .catch((error) => console.error(error));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-    const removeAllFromPanier = () => {
-        // Envoie une requête DELETE pour vider entièrement le panier dans la base de données
-        fetch('http://localhost:3002/api/panier', {
-            method: 'DELETE',
-        })
-        .then((response) => response.json())
-        .then(() => {
-            // Met à jour l'état local du panier après la suppression
-            setPanier([]);
-        })
-        .catch((error) => console.error(error));
-    };
+    fetchLocations();
+  }, []);
 
-    const filteredPanier = panier.filter((jeu) =>
-        jeu.Titre && jeu.Titre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
-
-    return (
-        <div className='Body'>
-            <div className="header">
-                <div className="logo">
-                    {/* Logo redirigeant vers la page d'accueil */}
-                    <Link to="/Accueil">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2948/2948025.png" alt="Logo Accueil" />
-                    </Link>
-                </div>
-                <div className="search-bar">
-                    <input
-                        type="text"
-                        placeholder="Rechercher un jeu"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        />
-                </div>
-                <div className="top-right-link">
-                    <Link to="/panier">
-                        <img src="https://cdn-icons-png.flaticon.com/512/126/126083.png" alt="Logo Panier" />
-                    </Link>
-                </div>
-                <div className='Deconnexion'>
-                    <Link to="/">
-                        <img src="https://cdn-icons-png.flaticon.com/512/126/126486.png" alt="Logo Deconnexion" />
-                    </Link>
-                </div>
-            </div>
-            <h1>Votre Panier:</h1>
-            <div className="nav-bar">
-                <input
-                type="text"
-                placeholder="Chercher un Jeu..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
-            <button onClick={removeAllFromPanier} className="remove-all-button">
-                Remove All
-            </button>
-            <div className="Panier">
-                {filteredPanier.map((jeu) => (
-                <div key={jeu.JeuxID} className="Panier-card">
-                    <p>{jeu.Titre}</p>
-                    {/* Ajoutez d'autres informations du jeu que vous souhaitez afficher */}
-                    <button onClick={() => removeFromPanier(jeu.JeuxID)}>Remove</button>
-                </div>
-                ))}
-            </div>
+  return (
+    <div className="Body">
+      <div className="header">
+        <div className="logo">
+          <Link to="/Accueil">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/2948/2948025.png"
+              alt="Logo Accueil"
+            />
+          </Link>
         </div>
-    );
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Rechercher un jeu"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <div className="top-right-link">
+          <Link to="/panier">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/126/126083.png"
+              alt="Logo Panier"
+            />
+          </Link>
+        </div>
+        <div className="Deconnexion">
+          <Link to="/">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/126/126486.png"
+              alt="Logo Deconnexion"
+            />
+          </Link>
+        </div>
+      </div>
+
+      
+
+      <div className="locations-list">
+        <h2>Locations</h2>
+        <ul>
+          {locations.map((location, index) => (
+            <li key={index}>
+              <p>Nom du jeu: {location.Titre}</p>
+              <p>Date de début: {new Date(location.DateDebut).toLocaleDateString()}</p>
+              <p>Date de fin: {new Date(location.DateFin).toLocaleDateString()}</p>
+              <p>Prix total: {location.Prix * location.Duree} $</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 }
