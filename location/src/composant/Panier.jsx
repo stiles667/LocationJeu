@@ -108,7 +108,7 @@ export default function Panier() {
                 <li className="carr" key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
                   {jeu && (
                     <>
-                      <p>Nom du jeu: {jeu.Titre}</p>
+                      <h1 className="title"> {jeu.Titre}</h1>
                       <p>Date de début: {dateDebut.toLocaleDateString()}</p>
                       <p>Date de fin: {dateFin.toLocaleDateString()}</p>
                       <p>Prix total: {totalPrice} $</p>

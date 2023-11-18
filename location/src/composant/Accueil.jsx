@@ -149,7 +149,7 @@ const Accueil = () => {
       {selectedGame && (
         <div className="overlay" onClick={closeOverlay}>  
           <div className="overlay-content" onClick={(e) => e.stopPropagation()}>
-            <h1>{selectedGame.Titre}</h1>
+            <h1 className>{selectedGame.Titre}</h1>
             <p>Description : {selectedGame.Description}</p>
             <p>Note moyenne : {selectedGame.NoteMoyenne}</p>
             <p>Prix : {selectedGame.Prix} $</p>
