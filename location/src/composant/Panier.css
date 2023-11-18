@@ -14,7 +14,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: transparent;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 999;
   }
@@ -88,7 +88,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     /* Autres styles pour chaque élément */
   }
-  .carr{
+  .carr {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -99,10 +99,13 @@
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    
+    width: calc(33.33% - 20px); /* Trois éléments par ligne avec une marge entre eux */
+    margin-right: 20px; /* Ajoutez une marge à droite pour l'espacement entre les éléments */
   }
-  .carr:hover{
+  
+  .carr:hover {
     transform: scale(1.05);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
   }
+  

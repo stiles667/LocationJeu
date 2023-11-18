@@ -185,8 +185,25 @@ app.get('/locations', async (req, res) => {
     if (conn) conn.release();
   }
 });
+app.post("/reviews", async (req, res) => {
+  let conn;
+  const { LocationID, Commentaire, Note } = req.body;
 
+  try {
+    conn = await pool.getConnection();
 
+    // Mettez à jour la ligne de la location avec le commentaire et la note
+    const query = "UPDATE location SET Commentaire = ?, Note = ? WHERE LocationID = ?";
+    await conn.query(query, [Commentaire, Note, LocationID]);
+
+    res.status(200).json({ message: 'Avis ajouté avec succès' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (conn) conn.release();
+  }
+});
 
 app.listen(3002, () => {
   console.log(`Server is running on port 3002`);

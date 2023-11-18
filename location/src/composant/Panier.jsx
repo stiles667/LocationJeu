@@ -4,7 +4,7 @@ import "./Panier.css";
 
 export default function Panier() {
   const [locations, setLocations] = useState([]);
-  const [jeux, setJeux] = useState([]); // Added state for jeux
+  const [jeux, setJeux] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [purchaseValidated, setPurchaseValidated] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -13,7 +13,7 @@ export default function Panier() {
     setSearchTerm(event.target.value);
   };
 
-  const handlePurchaseValidation = () => {
+  const handlePurchaseValidation = async () => {
     const newTotalAmount = locations.reduce((total, location) => {
       const dateDebut = new Date(location.DateDebut);
       const dateFin = new Date(location.DateFin);
@@ -23,6 +23,38 @@ export default function Panier() {
 
     setTotalAmount(newTotalAmount);
     setPurchaseValidated(true);
+
+    // Ajouter des avis après la validation des achats
+    await Promise.all(
+      locations.map(async (location) => {
+        await handleAddReview(location.LocationID, "Nouvel avis", 5);
+      })
+    );
+  };
+
+  const handleAddReview = async (locationId, commentaire, note) => {
+    try {
+      const response = await fetch("http://localhost:3002/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          LocationID: locationId,
+          Commentaire: commentaire,
+          Note: note,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error adding review");
+      }
+
+      const data = await response.json();
+      console.log(data); // Afficher la réponse du serveur (peut être utile pour le débogage)
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
   };
 
   useEffect(() => {
@@ -55,7 +87,7 @@ export default function Panier() {
     };
 
     fetchLocations();
-    fetchJeux(); // Fetch jeux data
+    fetchJeux();
   }, []);
 
   return (
@@ -109,7 +141,7 @@ export default function Panier() {
               const totalPrice = days * location.Prix;
 
               return (
-                <li key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
+                <li className="carr" key={index} style={{ backgroundImage: `url(${jeu && jeu.lien_image})` }}>
                   {jeu && (
                     <>
                       <p>Nom du jeu: {location.Titre}</p>
